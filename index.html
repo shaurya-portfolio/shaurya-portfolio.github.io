@@ -1,1 +1,1513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title id="pg-title">Portfolio</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap');
+:root{
+  --bg:#070b0f;--surface:#0d1117;--card:#0d1117;--border:#1a2332;
+  --text:#e6edf3;--muted:#56687a;--green:#00e5a0;--blue:#4d96ff;
+  --cyan:#00c9e0;--purple:#7c5cfc;
+  --grad:linear-gradient(135deg,#00e5a0 0%,#4d96ff 100%);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);background-image:radial-gradient(rgba(0,229,160,.04) 1px,transparent 1px);background-size:28px 28px;color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;overflow-x:hidden;}
+::-webkit-scrollbar{width:5px;}::-webkit-scrollbar-track{background:var(--bg);}::-webkit-scrollbar-thumb{background:rgba(0,229,160,.22);border-radius:3px;}
+@keyframes gflow{0%,100%{background-position:0 50%}50%{background-position:100% 50%}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.8)}}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:1rem 2.5rem;background:rgba(7,11,15,.93);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);}
+.nav-logo{font-family:'JetBrains Mono',monospace;font-size:1rem;color:var(--green);text-decoration:none;}
+.nav-logo .cur{display:inline-block;width:2px;height:.9em;background:var(--green);margin-left:1px;vertical-align:middle;animation:blink 1s step-end infinite;}
+.nav-links{display:flex;gap:.2rem;list-style:none;}
+.nav-links a{color:var(--muted);text-decoration:none;font-size:.82rem;font-weight:500;padding:.38rem .75rem;border-radius:7px;transition:all .2s;}
+.nav-links a:hover,.nav-links a.active{color:var(--green);background:rgba(0,229,160,.08);}
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px;}
+.hamburger span{display:block;width:22px;height:2px;background:var(--muted);border-radius:2px;transition:all .3s;}
+.mob-menu{display:none;position:fixed;top:57px;left:0;right:0;background:rgba(7,11,15,.98);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);z-index:199;flex-direction:column;padding:.75rem 1.5rem;}
+.mob-menu.open{display:flex;}
+.mob-menu a{color:var(--muted);text-decoration:none;font-size:.88rem;padding:.65rem .25rem;border-bottom:1px solid var(--border);transition:color .2s;}
+.mob-menu a:hover{color:var(--green);}
+/* PAGES */
+.page{display:none;min-height:100vh;padding:94px 2.5rem 4rem;position:relative;z-index:1;animation:fadeUp .4s ease;}
+.page.active{display:block;}
+.container{max-width:1080px;margin:0 auto;}
+.sec-title{font-family:'Syne',sans-serif;font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;margin-bottom:.35rem;letter-spacing:-1px;}
+.sec-title span{background:var(--grad);background-size:200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:gflow 4s ease infinite;}
+.sec-sub{color:var(--muted);font-size:.85rem;margin-bottom:2.5rem;}
+/* HOME */
+.home-hero{display:grid;grid-template-columns:1fr auto;gap:3rem;align-items:center;min-height:calc(100vh - 94px);}
+.hero-tag{display:inline-flex;align-items:center;gap:.45rem;background:rgba(0,229,160,.06);border:1px solid rgba(0,229,160,.18);border-radius:100px;padding:.35rem .85rem;font-size:.78rem;color:var(--green);margin-bottom:1.4rem;font-family:'JetBrains Mono',monospace;}
+.hero-tag .dot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 2s infinite;box-shadow:0 0 8px var(--green);}
+.hero-name{font-family:'Syne',sans-serif;font-size:clamp(2.6rem,7vw,4.8rem);font-weight:800;line-height:1.05;letter-spacing:-2px;margin-bottom:1rem;}
+.hero-name .g{background:var(--grad);background-size:200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:gflow 4s ease infinite;}
+.hero-bio{color:var(--muted);font-size:.98rem;line-height:1.8;margin-bottom:1.9rem;max-width:460px;}
+.hero-btns{display:flex;gap:.9rem;flex-wrap:wrap;}
+.btn{padding:.68rem 1.5rem;border-radius:10px;font-size:.85rem;font-weight:600;cursor:pointer;border:none;text-decoration:none;transition:all .25s;font-family:'DM Sans',sans-serif;display:inline-flex;align-items:center;gap:.35rem;}
+.btn-p{background:var(--grad);background-size:200%;animation:gflow 4s ease infinite;color:#070b0f;}
+.btn-p:hover{transform:translateY(-2px);box-shadow:0 8px 22px rgba(0,229,160,.3);}
+.btn-o{background:transparent;color:var(--text);border:1px solid rgba(0,229,160,.22);}
+.btn-o:hover{background:rgba(0,229,160,.05);border-color:rgba(0,229,160,.45);transform:translateY(-2px);}
+.contact-strip{display:flex;gap:.65rem;flex-wrap:wrap;margin-top:1.6rem;}
+.chip{display:flex;align-items:center;gap:.4rem;padding:.42rem .85rem;background:transparent;border:1px solid var(--border);border-radius:100px;font-size:.77rem;color:var(--muted);text-decoration:none;transition:all .2s;}
+.chip:hover{border-color:rgba(0,229,160,.35);color:var(--green);background:rgba(0,229,160,.04);}
+/* PHOTO */
+.hero-photo{position:relative;flex-shrink:0;}
+.photo-frame{width:265px;height:325px;border-radius:18px;overflow:hidden;position:relative;border:1px solid rgba(0,229,160,.15);box-shadow:0 0 40px rgba(0,229,160,.07);}
+.photo-frame img{width:100%;height:100%;object-fit:cover;display:block;}
+.photo-ph{width:100%;height:100%;background:var(--surface);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.7rem;color:var(--muted);font-size:.75rem;font-family:'JetBrains Mono',monospace;}
+.photo-ph svg{width:48px;height:48px;opacity:.2;color:var(--green);}
+.photo-badge{position:absolute;bottom:-12px;right:-12px;background:var(--surface);border:1px solid rgba(0,229,160,.2);border-radius:11px;padding:.55rem .85rem;font-size:.72rem;color:var(--muted);font-family:'JetBrains Mono',monospace;box-shadow:0 4px 18px rgba(0,0,0,.4);}
+.photo-badge strong{display:block;font-size:1rem;color:var(--green);font-family:'Syne',sans-serif;}
+/* CARDS */
+.card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.5rem;transition:all .3s;position:relative;overflow:hidden;}
+.card::after{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:var(--grad);opacity:0;transition:opacity .3s;}
+.card:hover{border-color:rgba(0,229,160,.28);box-shadow:0 0 22px rgba(0,229,160,.05),0 8px 28px rgba(0,0,0,.25);transform:translateY(-3px);}
+.card:hover::after{opacity:1;}
+.card-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem;}
+.card-title{font-family:'Syne',sans-serif;font-size:1.02rem;font-weight:700;margin-bottom:.38rem;}
+.card-meta{font-size:.74rem;color:var(--muted);margin-bottom:.55rem;}
+.card-desc{font-size:.88rem;color:#7a8fa0;line-height:1.65;}
+.tag{display:inline-block;padding:.18rem .52rem;border-radius:5px;font-size:.7rem;font-weight:500;margin:.18rem .1rem 0 0;background:rgba(0,229,160,.06);color:rgba(0,229,160,.65);border:1px solid rgba(0,229,160,.13);font-family:'JetBrains Mono',monospace;}
+/* PROJECT THUMB */
+.proj-thumb{margin:-1.5rem -1.5rem 1.2rem -1.5rem;width:calc(100% + 3rem);height:165px;overflow:hidden;border-bottom:1px solid var(--border);border-radius:14px 14px 0 0;position:relative;}
+.proj-thumb img{width:100%;height:100%;object-fit:cover;display:block;position:absolute;inset:0;opacity:0;transition:opacity .35s ease, transform .4s ease;transform:scale(1.06);}
+.card:hover .proj-thumb img{opacity:1;transform:scale(1);}
+.proj-thumb-ph{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.35rem;color:var(--muted);font-size:.72rem;background:linear-gradient(135deg,rgba(0,229,160,.04),rgba(77,150,255,.04));position:relative;z-index:0;transition:opacity .35s ease;}
+.card:hover .proj-thumb-ph{opacity:0;}
+.proj-thumb-ph .ti{font-size:2.2rem;opacity:.55;transition:transform .3s ease;}
+.card:hover .proj-thumb-ph .ti{transform:scale(0.85);}
+.proj-links{margin-top:1rem;display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;}
+.plink{font-size:.75rem;color:var(--muted);text-decoration:none;transition:color .2s;}
+.plink:hover{color:var(--green);}
+.plink.no-demo{color:var(--muted);opacity:.5;cursor:default;font-style:italic;}
+.btn-files{display:inline-flex;align-items:center;gap:.35rem;padding:.34rem .78rem;background:rgba(0,229,160,.07);border:1px solid rgba(0,229,160,.18);border-radius:7px;color:var(--green);font-size:.72rem;font-weight:600;cursor:pointer;transition:all .2s;font-family:'JetBrains Mono',monospace;}
+.btn-files:hover{background:rgba(0,229,160,.13);border-color:rgba(0,229,160,.38);}
+/* SKILLS */
+.skill-group{margin-bottom:2.1rem;}
+.sg-label{font-size:.8rem;color:var(--muted);margin-bottom:.9rem;font-weight:500;}
+.skills-flex{display:flex;flex-wrap:wrap;gap:.7rem;}
+.skill-badge{padding:.48rem 1.05rem;border-radius:100px;font-size:.82rem;font-weight:500;position:relative;background:transparent;color:var(--text);transition:all .3s;cursor:default;}
+.skill-badge::before{content:'';position:absolute;inset:-1px;border-radius:100px;padding:1px;background:var(--sk-color,var(--grad));background-size:200%;animation:gflow 4s ease infinite;-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask-composite:exclude;}
+.skill-badge:hover{background:rgba(0,229,160,.06);box-shadow:0 0 16px rgba(0,229,160,.18);transform:scale(1.04);}
+/* TIMELINE */
+.timeline{position:relative;padding-left:2rem;}
+.timeline::before{content:'';position:absolute;left:0;top:8px;bottom:8px;width:1px;background:linear-gradient(to bottom,var(--green),var(--blue) 70%,transparent);}
+.titem{position:relative;margin-bottom:2.2rem;padding-left:1.5rem;}
+.titem::before{content:'';position:absolute;left:-2.44rem;top:5px;width:10px;height:10px;border-radius:50%;background:var(--green);border:2px solid var(--bg);box-shadow:0 0 10px rgba(0,229,160,.55);}
+.tdate{font-size:.7rem;color:var(--green);font-weight:500;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:.32rem;font-family:'JetBrains Mono',monospace;}
+.trole{font-family:'Syne',sans-serif;font-size:1.02rem;font-weight:700;margin-bottom:.18rem;}
+.tplace{font-size:.8rem;color:var(--muted);margin-bottom:.45rem;}
+.tdesc{font-size:.86rem;color:#6a7f90;line-height:1.65;}
+/* PARALLEL TIMELINE */
+.tpar{position:relative;padding-left:1.5rem;margin-bottom:2.2rem;}
+.tpar::before{content:'';position:absolute;left:-2.44rem;top:5px;width:10px;height:10px;border-radius:50%;background:var(--cyan);border:2px solid var(--bg);box-shadow:0 0 10px rgba(0,201,224,.55);z-index:1;}
+.par-date{font-size:.7rem;color:var(--cyan);font-weight:500;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:.75rem;display:flex;align-items:center;gap:.5rem;font-family:'JetBrains Mono',monospace;}
+.par-date::after{content:'';flex:1;height:1px;background:linear-gradient(to right,rgba(0,201,224,.35),transparent);}
+.par-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:.4rem;}
+.par-scroll::-webkit-scrollbar{height:3px;}
+.par-scroll::-webkit-scrollbar-thumb{background:rgba(0,201,224,.3);border-radius:2px;}
+.par-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;min-width:460px;}
+.par-card{background:var(--surface);border:1px solid var(--border);border-top:2px solid var(--cyan);border-radius:0 0 12px 12px;padding:1.1rem 1.2rem;transition:all .3s;}
+.par-card:hover{border-color:rgba(0,201,224,.32);}
+/* CERTS */
+.cert-row{display:flex;align-items:flex-start;gap:1rem;}
+.cert-icon{width:42px;height:42px;border-radius:9px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:1.2rem;}
+.cert-body{flex:1;}
+.cert-title-t{font-family:'Syne',sans-serif;font-size:.93rem;font-weight:700;margin-bottom:.18rem;}
+.cert-iss{font-size:.74rem;color:var(--muted);margin-bottom:.38rem;}
+.cert-link{font-size:.74rem;color:var(--blue);text-decoration:none;transition:color .2s;}
+.cert-link:hover{color:var(--green);}
+/* MARKS */
+.marks-card{margin-bottom:1.4rem;}
+.marks-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;}
+.marks-title-t{font-family:'Syne',sans-serif;font-size:.98rem;font-weight:700;}
+.mbadge{font-size:.68rem;padding:.22rem .65rem;border-radius:100px;font-weight:600;font-family:'JetBrains Mono',monospace;}
+.mb-gold{background:rgba(0,229,160,.09);color:var(--green);border:1px solid rgba(0,229,160,.22);}
+.mb-blue{background:rgba(77,150,255,.09);color:var(--blue);border:1px solid rgba(77,150,255,.22);}
+.marks-body{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.75rem;padding-top:.75rem;border-top:1px solid var(--border);margin-top:.75rem;}
+.marks-note{font-size:.75rem;color:var(--muted);}
+.btn-dl{display:inline-flex;align-items:center;gap:.38rem;padding:.42rem .85rem;border-radius:8px;background:rgba(77,150,255,.09);border:1px solid rgba(77,150,255,.22);color:var(--blue);font-size:.72rem;font-weight:600;text-decoration:none;transition:all .22s;cursor:pointer;font-family:'JetBrains Mono',monospace;}
+.btn-dl:hover{background:rgba(77,150,255,.16);transform:translateY(-1px);}
+/* PROJECT MODAL */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(7,11,15,.9);backdrop-filter:blur(14px);z-index:500;align-items:flex-start;justify-content:center;padding:1rem;overflow-y:auto;}
+.modal-bg.open{display:flex;}
+.modal{background:var(--surface);border:1px solid rgba(0,229,160,.18);border-radius:18px;width:100%;max-width:880px;margin:auto;overflow:hidden;animation:fadeUp .3s ease;box-shadow:0 0 60px rgba(0,229,160,.07),0 24px 80px rgba(0,0,0,.6);}
+.modal-head{padding:1.4rem 1.5rem;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;}
+.modal-close{background:rgba(255,255,255,.04);border:1px solid var(--border);color:var(--muted);font-size:1.1rem;width:30px;height:30px;border-radius:7px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s;}
+.modal-close:hover{border-color:rgba(255,100,100,.35);color:#ff6b6b;}
+.modal-body{padding:1.5rem;}
+.ftabs{display:flex;gap:.45rem;flex-wrap:wrap;margin-bottom:1.1rem;}
+.ftab{display:inline-flex;align-items:center;gap:.35rem;padding:.36rem .78rem;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:7px;color:var(--muted);font-size:.74rem;cursor:pointer;transition:all .2s;font-family:'JetBrains Mono',monospace;}
+.ftab:hover{border-color:rgba(0,229,160,.25);color:var(--green);}
+.ftab.on{background:rgba(0,229,160,.07);border-color:rgba(0,229,160,.32);color:var(--green);}
+.fpreview{background:var(--bg);border:1px solid var(--border);border-radius:10px;min-height:180px;overflow:hidden;}
+.prev-img{width:100%;display:block;border-radius:10px;}
+.prev-code{margin:0!important;border-radius:10px!important;font-size:.79rem!important;max-height:480px;overflow-y:auto;}
+.prev-tw{overflow-x:auto;max-height:380px;overflow-y:auto;}
+.prev-table{width:100%;border-collapse:collapse;font-size:.74rem;font-family:'JetBrains Mono',monospace;}
+.prev-table th{padding:.45rem .7rem;text-align:left;background:rgba(0,229,160,.06);color:var(--green);font-weight:600;border-bottom:1px solid var(--border);position:sticky;top:0;}
+.prev-table td{padding:.4rem .7rem;border-bottom:1px solid rgba(255,255,255,.03);color:#6a7f90;}
+.prev-iframe{width:100%;height:480px;border:none;display:block;}
+.prev-msg{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2.5rem;gap:.85rem;text-align:center;color:var(--muted);font-size:.78rem;}
+.prev-msg .pm-ic{font-size:2.2rem;opacity:.45;}
+.prev-msg a{color:var(--blue);text-decoration:none;padding:.45rem .9rem;border:1px solid rgba(77,150,255,.28);border-radius:8px;transition:all .2s;}
+.prev-msg a:hover{background:rgba(77,150,255,.1);}
+.prev-load{display:flex;align-items:center;justify-content:center;padding:2.5rem;color:var(--muted);font-size:.76rem;}
+/* DEMO MODAL */
+.demo-modal-bg{display:none;position:fixed;inset:0;background:rgba(7,11,15,.95);backdrop-filter:blur(16px);z-index:600;align-items:flex-start;justify-content:center;padding:.5rem;overflow-y:auto;}
+.demo-modal-bg.open{display:flex;}
+.demo-modal{background:var(--surface);border:1px solid rgba(0,229,160,.2);border-radius:12px;width:100%;max-width:960px;margin:auto;overflow:hidden;animation:fadeUp .3s ease;box-shadow:0 0 60px rgba(0,229,160,.08),0 24px 80px rgba(0,0,0,.7);}
+.demo-modal-head{padding:.75rem 1rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:.5rem;}
+.demo-modal-body{padding:0;min-height:120px;}
+.demo-iframe{width:100%;height:clamp(260px,60vw,580px);border:none;display:block;}
+.demo-img{width:100%;display:block;max-height:clamp(260px,60vw,580px);object-fit:contain;background:var(--bg);}
+.demo-msg{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:3rem;gap:1rem;text-align:center;color:var(--muted);font-size:.85rem;}
+.demo-msg .dm-ic{font-size:2.8rem;opacity:.5;}
+.demo-msg a{color:var(--blue);text-decoration:none;padding:.5rem 1.1rem;border:1px solid rgba(77,150,255,.3);border-radius:9px;transition:all .2s;font-size:.82rem;}
+.demo-msg a:hover{background:rgba(77,150,255,.1);}
+.img-gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:.65rem;padding:.85rem;}
+.img-gallery img{width:100%;border-radius:7px;border:1px solid var(--border);cursor:zoom-in;transition:all .2s;aspect-ratio:16/10;object-fit:cover;}
+/* FOOTER */
+footer{text-align:center;padding:1.6rem;color:var(--muted);font-size:.72rem;border-top:1px solid var(--border);position:relative;z-index:1;}
+.admin-trigger{color:rgba(255,255,255,.06);font-size:.65rem;cursor:pointer;text-decoration:none;transition:color .3s;margin-left:.5rem;}
+.admin-trigger:hover{color:var(--green);}
+/* ─── ADMIN PANEL ─── */
+.a-login-bg{display:none;position:fixed;inset:0;background:rgba(7,11,15,.95);backdrop-filter:blur(20px);z-index:900;align-items:center;justify-content:center;}
+.a-login-bg.open{display:flex;}
+.a-login{background:var(--surface);border:1px solid rgba(0,229,160,.2);border-radius:18px;padding:2.5rem;width:340px;max-width:95vw;}
+.a-login h2{font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;margin-bottom:.3rem;}
+.a-login p{font-size:.78rem;color:var(--muted);margin-bottom:1.75rem;}
+.aform-row{margin-bottom:1rem;}
+.aform-row label{display:block;font-size:.72rem;color:var(--muted);margin-bottom:.4rem;font-family:'JetBrains Mono',monospace;}
+.aform-row input,.aform-row textarea,.aform-row select{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:.6rem .85rem;color:var(--text);font-size:.85rem;font-family:'DM Sans',sans-serif;outline:none;transition:border .2s;resize:vertical;}
+.aform-row input:focus,.aform-row textarea:focus,.aform-row select:focus{border-color:rgba(0,229,160,.4);}
+.a-login .err{color:#ff6b6b;font-size:.76rem;margin-top:.75rem;text-align:center;}
+.a-panel{display:none!important;position:fixed;inset:0;z-index:800;background:var(--bg);flex-direction:column;}.a-panel.open{display:flex!important;}
+.a-panel.open{display:flex;}
+/* ── ADMIN TOPBAR ── */
+.a-sidebar{width:100%;flex-shrink:0;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 1.25rem;gap:.5rem;height:48px;overflow-x:auto;overflow-y:hidden;}
+.a-sidebar::-webkit-scrollbar{height:3px;}
+.a-sidebar::-webkit-scrollbar-thumb{background:rgba(0,229,160,.2);border-radius:2px;}
+.a-brand{font-family:'JetBrains Mono',monospace;font-size:.78rem;color:var(--green);white-space:nowrap;padding-right:.75rem;border-right:1px solid var(--border);margin-right:.25rem;flex-shrink:0;}
+.a-brand span{display:none;}
+.a-nav{display:flex;flex-direction:row;gap:.2rem;align-items:center;flex:1;}
+.a-nav a{color:var(--muted);text-decoration:none;font-size:.75rem;padding:.32rem .65rem;border-radius:6px;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:.35rem;white-space:nowrap;flex-shrink:0;}
+.a-nav a:hover,.a-nav a.on{color:var(--green);background:rgba(0,229,160,.08);}
+.a-sidebar-btns{display:flex;flex-direction:row;gap:.35rem;flex-shrink:0;margin-left:auto;position:sticky;right:0;background:var(--surface);padding-left:.5rem;}
+.a-btn-exp{padding:.3rem .75rem;border-radius:6px;background:rgba(77,150,255,.09);border:1px solid rgba(77,150,255,.22);color:var(--blue);font-size:.72rem;font-weight:600;cursor:pointer;white-space:nowrap;transition:all .2s;}
+.a-btn-exp:hover{background:rgba(77,150,255,.16);}
+.a-btn-logout{padding:.3rem .75rem;border-radius:6px;background:transparent;border:1px solid var(--border);color:var(--muted);font-size:.72rem;cursor:pointer;white-space:nowrap;transition:all .2s;}
+.a-btn-logout:hover{border-color:#ff6b6b;color:#ff6b6b;}
+.a-content{flex:1;overflow-y:auto;padding:1.5rem;}
+.a-content h3{font-family:'Syne',sans-serif;font-size:1.15rem;font-weight:800;margin-bottom:1.1rem;display:flex;align-items:center;gap:.65rem;}
+.a-content h3 span{font-size:.75rem;color:var(--muted);font-family:'DM Sans',sans-serif;font-weight:400;}
+/* Admin item list */
+.a-item{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1rem 1.25rem;margin-bottom:.75rem;display:flex;align-items:flex-start;gap:1rem;}
+.a-item-body{flex:1;}
+.a-item-title{font-weight:600;font-size:.9rem;margin-bottom:.18rem;}
+.a-item-sub{font-size:.76rem;color:var(--muted);}
+.a-item-btns{display:flex;gap:.45rem;flex-shrink:0;}
+.a-edit{padding:.32rem .65rem;border-radius:7px;background:rgba(77,150,255,.09);border:1px solid rgba(77,150,255,.22);color:var(--blue);font-size:.72rem;cursor:pointer;transition:all .2s;}
+.a-edit:hover{background:rgba(77,150,255,.18);}
+.a-del{padding:.32rem .65rem;border-radius:7px;background:rgba(255,107,107,.07);border:1px solid rgba(255,107,107,.2);color:#ff6b6b;font-size:.72rem;cursor:pointer;transition:all .2s;}
+.a-del:hover{background:rgba(255,107,107,.15);}
+.a-add-btn{display:inline-flex;align-items:center;gap:.4rem;padding:.6rem 1.25rem;background:rgba(0,229,160,.09);border:1px solid rgba(0,229,160,.22);border-radius:10px;color:var(--green);font-size:.82rem;font-weight:600;cursor:pointer;margin-bottom:1.5rem;transition:all .2s;}
+.a-add-btn:hover{background:rgba(0,229,160,.16);}
+/* Admin form */
+.a-form{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1.5rem;margin-bottom:1.5rem;}
+.a-form-title{font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;margin-bottom:1.25rem;color:var(--text);}
+.a-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+.a-form-grid .full{grid-column:1/-1;}
+.a-form-btns{display:flex;gap:.65rem;margin-top:1.25rem;}
+.a-save{padding:.58rem 1.4rem;border-radius:9px;background:var(--grad);background-size:200%;animation:gflow 4s ease infinite;border:none;color:#070b0f;font-size:.82rem;font-weight:700;cursor:pointer;}
+.a-cancel{padding:.58rem 1rem;border-radius:9px;background:transparent;border:1px solid var(--border);color:var(--muted);font-size:.82rem;cursor:pointer;}
+.a-cancel:hover{border-color:rgba(255,100,100,.35);color:#ff6b6b;}
+/* File upload zone */
+.upload-zone{border:1.5px dashed var(--border);border-radius:10px;padding:1.25rem;text-align:center;cursor:pointer;transition:all .25s;position:relative;margin-top:.5rem;}
+.upload-zone:hover{border-color:rgba(0,229,160,.35);background:rgba(0,229,160,.03);}
+.upload-zone input[type="file"]{position:absolute;inset:0;opacity:0;cursor:pointer;}
+.upload-zone-text{font-size:.78rem;color:var(--muted);}
+.upload-zone-text em{color:var(--green);font-style:normal;}
+.preview-thumb{width:100%;max-height:120px;object-fit:cover;border-radius:8px;margin-top:.5rem;display:block;}
+/* Skills admin */
+.sk-cat{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.1rem 1.25rem;margin-bottom:.85rem;}
+.sk-cat-hdr{display:flex;align-items:center;gap:.75rem;margin-bottom:.85rem;}
+.sk-cat-hdr input.cat-name{flex:1;background:transparent;border:none;border-bottom:1px solid var(--border);color:var(--text);font-size:.9rem;font-weight:600;font-family:'DM Sans',sans-serif;outline:none;padding:.2rem 0;}
+.sk-list{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:.75rem;}
+.sk-chip{display:inline-flex;align-items:center;gap:.3rem;padding:.28rem .65rem;border-radius:100px;font-size:.76rem;border:1px solid var(--border);color:var(--text);}
+.sk-chip button{background:none;border:none;color:var(--muted);cursor:pointer;font-size:.85rem;line-height:1;padding:0 0 0 .1rem;}
+.sk-chip button:hover{color:#ff6b6b;}
+.sk-add-row{display:flex;gap:.5rem;align-items:center;}
+.sk-add-row input{flex:1;background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:.4rem .7rem;color:var(--text);font-size:.8rem;outline:none;}
+.sk-add-row input:focus{border-color:rgba(0,229,160,.4);}
+.sk-add-row button{padding:.4rem .8rem;border-radius:7px;background:rgba(0,229,160,.09);border:1px solid rgba(0,229,160,.22);color:var(--green);font-size:.78rem;cursor:pointer;}
+/* Toast */
+.toast{position:fixed;bottom:1.5rem;right:1.5rem;z-index:999;background:var(--surface);border:1px solid rgba(0,229,160,.3);border-radius:10px;padding:.7rem 1.2rem;font-size:.82rem;color:var(--green);box-shadow:0 8px 24px rgba(0,0,0,.4);animation:fadeUp .3s ease;display:flex;align-items:center;gap:.5rem;}
+.toast.err{border-color:rgba(255,107,107,.3);color:#ff6b6b;}
+/* File manager in project admin */
+.file-item{display:flex;align-items:center;gap:.65rem;padding:.55rem .8rem;background:var(--bg);border:1px solid var(--border);border-radius:8px;margin-bottom:.45rem;}
+.file-item-info{flex:1;font-size:.78rem;}
+.file-item-info em{color:var(--muted);font-style:normal;font-size:.7rem;display:block;margin-top:.1rem;}
+.file-item-del{background:none;border:none;color:var(--muted);cursor:pointer;font-size:1rem;}
+.file-item-del:hover{color:#ff6b6b;}
+/* Responsive */
+@media(max-width:860px){
+  .home-hero{grid-template-columns:1fr;text-align:center;padding-top:1.5rem;}
+  .hero-bio{margin:0 auto 1.9rem;}
+  .hero-btns,.contact-strip{justify-content:center;}
+  .hero-photo{display:flex;justify-content:center;order:-1;}
+  .photo-frame{width:195px;height:240px;}
+  .photo-badge{display:none;}
+  .a-form-grid{grid-template-columns:1fr;}
+  .card-grid{grid-template-columns:repeat(2,1fr);}
+}
+@media(max-width:640px){
+  nav{padding:.85rem 1.2rem;}
+  .nav-links{display:none;}
+  .hamburger{display:flex;}
+  .page{padding:78px 1rem 3rem;}
+  .card-grid{grid-template-columns:1fr !important;}
+  .sec-title{font-size:clamp(1.4rem,6vw,2rem);}
+  .hero-name{font-size:clamp(2rem,10vw,3.5rem);letter-spacing:-1px;}
+  .hero-bio{font-size:.88rem;}
+  .chip{font-size:.7rem;padding:.35rem .65rem;}
+  .skill-badge{font-size:.75rem;padding:.38rem .8rem;}
+  .timeline{padding-left:1.25rem;}
+  .titem{padding-left:1rem;}
+  .titem::before{left:-1.69rem;}
+  .tpar{padding-left:1rem;}
+  .tpar::before{left:-1.69rem;}
+  .par-row{grid-template-columns:1fr;}
+  .marks-hdr{flex-direction:column;align-items:flex-start;gap:.4rem;}
+  .marks-table{font-size:.75rem;}
+  .a-content{padding:.85rem;}
+  .a-nav a{font-size:.68rem;padding:.25rem .45rem;}
+  .a-brand{font-size:.68rem;}
+}
+@media(max-width:380px){
+  .page{padding:72px .75rem 2.5rem;}
+  .hero-name{font-size:2rem;}
+  .btn{padding:.55rem 1rem;font-size:.78rem;}
+}
+</style>
+</head>
+<body>
 
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="#" onclick="showPage('home')">shaurya.portfolio<span class="cur"></span></a>
+  <ul class="nav-links">
+    <li><a href="#" onclick="showPage('home')"     id="nav-home">Home</a></li>
+    <li><a href="#" onclick="showPage('skills')"   id="nav-skills">Skills</a></li>
+    <li><a href="#" onclick="showPage('projects')" id="nav-projects">Projects</a></li>
+    <li><a href="#" onclick="showPage('certs')"    id="nav-certs">Certifications</a></li>
+    <li><a href="#" onclick="showPage('marks')"    id="nav-marks">Marksheets</a></li>
+    <li><a href="#" onclick="showPage('exp')"      id="nav-exp">Experience</a></li>
+    <li><a href="#" onclick="showPage('edu')"      id="nav-edu">Education</a></li>
+  </ul>
+  <div class="hamburger" id="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></div>
+</nav>
+<div class="mob-menu" id="mobMenu">
+  <a href="#" onclick="showPage('home');closeMenu()">Home</a>
+  <a href="#" onclick="showPage('skills');closeMenu()">Skills</a>
+  <a href="#" onclick="showPage('projects');closeMenu()">Projects</a>
+  <a href="#" onclick="showPage('certs');closeMenu()">Certifications</a>
+  <a href="#" onclick="showPage('marks');closeMenu()">Marksheets</a>
+  <a href="#" onclick="showPage('exp');closeMenu()">Experience</a>
+  <a href="#" onclick="showPage('edu');closeMenu()">Education</a>
+</div>
+
+<!-- PAGES -->
+<section class="page active" id="page-home"><div class="container" id="home-container"></div></section>
+<section class="page" id="page-skills"><div class="container" id="skills-container"></div></section>
+<section class="page" id="page-projects"><div class="container" id="projects-container"></div></section>
+<section class="page" id="page-certs"><div class="container" id="certs-container"></div></section>
+<section class="page" id="page-marks"><div class="container" id="marks-container"></div></section>
+<section class="page" id="page-exp"><div class="container" id="exp-container"></div></section>
+<section class="page" id="page-edu"><div class="container" id="edu-container"></div></section>
+
+<!-- PROJECT MODAL -->
+<div class="modal-bg" id="modalBg" onclick="handleOverlay(event)">
+  <div class="modal" id="projectModal">
+    <div class="modal-head">
+      <div>
+        <div id="m-title" style="font-family:'Syne',sans-serif;font-size:1.25rem;font-weight:800;margin-bottom:.28rem"></div>
+        <div id="m-meta"  style="font-size:.7rem;color:var(--muted)"></div>
+        <div id="m-tags"  style="margin-top:.5rem"></div>
+      </div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div id="m-desc" style="color:#6a7f90;font-size:.88rem;line-height:1.7;margin-bottom:1.1rem"></div>
+      <div id="m-links" style="display:flex;gap:.65rem;flex-wrap:wrap;margin-bottom:1.4rem"></div>
+      <div id="files-sec" style="display:none">
+        <div style="font-size:.7rem;color:var(--green);text-transform:uppercase;letter-spacing:2px;margin-bottom:.65rem;opacity:.7">Project Files</div>
+        <div class="ftabs" id="ftabs"></div>
+        <div class="fpreview" id="fpreview"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- DEMO MODAL -->
+<div class="demo-modal-bg" id="demoBg" onclick="handleDemoOverlay(event)">
+  <div class="demo-modal" id="demoModal">
+    <div class="demo-modal-head">
+      <div>
+        <div id="dm-title" style="font-family:'Syne',sans-serif;font-size:clamp(.85rem,3vw,1.05rem);font-weight:800;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:75vw"></div>
+        <div id="dm-sub" style="font-size:.7rem;color:var(--muted);margin-top:.15rem"></div>
+      </div>
+      <button class="modal-close" onclick="closeDemoModal()">✕</button>
+    </div>
+    <div class="demo-modal-body" id="dm-body"></div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  Made with care · Hosted on GitHub Pages
+  <a class="admin-trigger" onclick="openAdminLogin()" title="Admin">⚙</a>
+</footer>
+
+<!-- ADMIN LOGIN -->
+<div class="a-login-bg" id="aLoginBg">
+  <div class="a-login">
+    <h2>Admin Portal</h2>
+    <p>Sign in to manage your portfolio</p>
+    <div class="aform-row"><label>Username</label><input type="text" id="aUser" placeholder="Username" onkeydown="if(e&&e.key==='Enter')doLogin()"></div>
+    <div class="aform-row"><label>Password</label><input type="password" id="aPass" placeholder="Password" onkeydown="if(event.key==='Enter')doLogin()"></div>
+    <button class="a-save" style="width:100%;margin-top:.5rem" onclick="doLogin()">Sign In</button>
+    <button class="a-cancel" style="width:100%;margin-top:.5rem" onclick="closeAdminLogin()">Cancel</button>
+    <div class="err" id="loginErr"></div>
+  </div>
+</div>
+
+<!-- ADMIN PANEL -->
+<div class="a-panel" id="aPanel">
+  <div class="a-sidebar">
+    <div class="a-brand">Admin Portal<span>Manage your portfolio</span></div>
+    <nav class="a-nav">
+      <a onclick="aPage('home')"     id="an-home">🏠 Home</a>
+      <a onclick="aPage('skills')"   id="an-skills">⚡ Skills</a>
+      <a onclick="aPage('projects')" id="an-projects">🚀 Projects</a>
+      <a onclick="aPage('certs')"    id="an-certs">🏅 Certifications</a>
+      <a onclick="aPage('marks')"    id="an-marks">📊 Marksheets</a>
+      <a onclick="aPage('exp')"      id="an-exp">💼 Experience</a>
+      <a onclick="aPage('edu')"      id="an-edu">🎓 Education</a>
+    </nav>
+    <div class="a-sidebar-btns">
+      <div class="a-btn-exp" onclick="exportHTML()">⬇ Export HTML</div>
+      <div class="a-btn-logout" onclick="adminLogout()">Logout</div>
+    </div>
+  </div>
+  <div class="a-content" id="aContent"></div>
+</div>
+
+<script>
+/* ════════════════════════════════════════════
+   DATA
+════════════════════════════════════════════ */
+const OVERRIDE = null; /*PORTFOLIO_DATA_END*/
+
+const DEFAULT = {
+  home:{name:'Your Name',greeting:'Open to opportunities',bio:'A passionate developer & creative problem-solver who loves building things that live on the internet. Always learning, always shipping.',email:'youremail@example.com',github:'https://github.com/yourusername',linkedin:'https://linkedin.com/in/yourusername',photo:null,yearsExp:'3+',expBadge:'years experience'},
+  skills:[
+    {id:'sg1',cat:'Languages & Frameworks',color:'#00e5a0',items:['HTML5','CSS3','JavaScript','Python','React','Node.js','TypeScript','Java']},
+    {id:'sg2',cat:'Databases & Cloud',color:'#4d96ff',items:['MySQL','MongoDB','Firebase','AWS','Supabase']},
+    {id:'sg3',cat:'Tools & Platforms',color:'#7c5cfc',items:['Git & GitHub','VS Code','Figma','Docker','Linux','Power BI','Excel']}
+  ],
+  projects:[
+    {id:'p1',title:'Project Name One',icon:'🛒',date:'Jan 2024 — Mar 2024',desc:'Short description of what this project does, what problem it solves, and what you learned while building it.',tags:['React','Node.js','MongoDB'],thumbnail:null,github:'#',demo:null,files:[]},
+    {id:'p2',title:'Project Name Two',icon:'🤖',date:'May 2024 — Jul 2024',desc:'Short description of what this project does.',tags:['Python','Flask','AI/ML'],thumbnail:null,github:'#',demo:null,files:[]},
+    {id:'p3',title:'Project Name Three',icon:'📊',date:'Sep 2024 — Nov 2024',desc:'Short description of what this project does.',tags:['Next.js','PostgreSQL','Tailwind'],thumbnail:null,github:'#',demo:null,files:[]},
+    {id:'p4',title:'Project Name Four',icon:'📱',date:'Dec 2024 — Feb 2025',desc:'Short description of what this project does.',tags:['React Native','Firebase'],thumbnail:null,github:'#',demo:null,files:[]}
+  ],
+  certs:[
+    {id:'c1',title:'Certification Name',issuer:'Issuer Name',date:'Month Year',link:'#',color:'green'},
+    {id:'c2',title:'Certification Name',issuer:'Issuer Name',date:'Month Year',link:'#',color:'blue'},
+    {id:'c3',title:'Certification Name',issuer:'Issuer Name',date:'Month Year',link:'#',color:'cyan'}
+  ],
+  experience:[
+    {id:'e1',type:'single',startDate:'Jun 2024',endDate:'Present',role:'Job Title',company:'Company Name',empType:'Full-time',location:'City',desc:'Describe your responsibilities, impact, and technologies used.'},
+    {id:'e2',type:'parallel',startDate:'Jan 2024',endDate:'May 2024',jobs:[
+      {role:'Job Title A',company:'Company A',empType:'Internship',location:'Remote',desc:'What you did at Company A.'},
+      {role:'Job Title B',company:'Company B',empType:'Part-time',location:'City',desc:'What you did at Company B.'}
+    ]},
+    {id:'e3',type:'single',startDate:'Aug 2023',endDate:'Dec 2023',role:'Freelance Developer',company:'Self-employed',empType:'Freelance',location:'Remote',desc:'Built projects for clients end-to-end. React, Node.js, various APIs.'}
+  ],
+  education:[
+    {id:'ed1',startYear:'2022',endYear:'2026',degree:'B.Tech',institution:'Your College',location:'City',desc:'Branch/specialization. CGPA: X.XX / 10.'},
+    {id:'ed2',startYear:'2020',endYear:'2022',degree:'Class 12th',institution:'School Name',location:'',desc:'Percentage: XX%. Board name.'},
+    {id:'ed3',startYear:'',endYear:'2020',degree:'Class 10th',institution:'School Name',location:'',desc:'Percentage: XX%.'}
+  ],
+  marksheets:[
+    {id:'ms1',name:'Semester 1',cgpa:'9.2',badgeType:'gold',fileData:null,fileName:'',externalLink:''},
+    {id:'ms2',name:'Semester 2',cgpa:'8.7',badgeType:'blue',fileData:null,fileName:'',externalLink:''}
+  ]
+};
+
+let D = {};
+function uid(){return 'id'+Date.now()+Math.random().toString(36).slice(2,7);}
+function loadData(){
+  try{
+    const saved = localStorage.getItem('pf_data');
+    D = saved ? JSON.parse(saved) : (OVERRIDE ? JSON.parse(JSON.stringify(OVERRIDE)) : JSON.parse(JSON.stringify(DEFAULT)));
+  }catch(e){ D = JSON.parse(JSON.stringify(DEFAULT)); }
+}
+function saveData(){
+  try{ localStorage.setItem('pf_data', JSON.stringify(D)); }
+  catch(e){ showToast('Storage full! Export HTML to save changes.', true); }
+}
+
+/* ════════════════════════════════════════════
+   PORTFOLIO RENDER
+════════════════════════════════════════════ */
+function renderAll(){
+  renderHome(); renderSkills(); renderProjects();
+  renderCerts(); renderMarks(); renderExp(); renderEdu();
+  document.getElementById('pg-title').textContent = D.home.name + ' — Portfolio';
+}
+
+function renderHome(){
+  const h = D.home;
+  document.getElementById('home-container').innerHTML = `
+  <div class="home-hero">
+    <div class="hero-text">
+      <div class="hero-tag"><span class="dot"></span>${escHtml(h.greeting)}</div>
+      <h1 class="hero-name">Hey, I'm<br><span class="g">${escHtml(h.name)}</span></h1>
+      <p class="hero-bio">${escHtml(h.bio)}</p>
+      <div class="hero-btns">
+        <a class="btn btn-p" href="#" onclick="showPage('projects')">View Projects →</a>
+        <a class="btn btn-o" href="mailto:${escHtml(h.email)}">Get In Touch</a>
+      </div>
+      <div class="contact-strip">
+        ${h.email?`<a class="chip" href="mailto:${escHtml(h.email)}">${svgEmail}${escHtml(h.email)}</a>`:''}
+        ${h.github?`<a class="chip" href="${escHtml(h.github)}" target="_blank">${svgGh} GitHub</a>`:''}
+        ${h.linkedin?`<a class="chip" href="${escHtml(h.linkedin)}" target="_blank">${svgLi} LinkedIn</a>`:''}
+      </div>
+    </div>
+    <div class="hero-photo">
+      <div class="photo-frame">
+        ${h.photo?`<img src="${h.photo}" alt="${escHtml(h.name)}">`:`<div class="photo-ph">${svgUser}<span>Add your photo</span></div>`}
+      </div>
+    </div>
+  </div>`;
+}
+
+function renderSkills(){
+  const cats = D.skills;
+  document.getElementById('skills-container').innerHTML = `
+  <h2 class="sec-title">My <span>Skills</span></h2>
+  <p class="sec-sub">Technologies & tools I work with</p>
+  ${cats.map(g=>`
+    <div class="skill-group">
+      <div class="sg-label">${escHtml(g.cat)}</div>
+      <div class="skills-flex">
+        ${g.items.map(s=>`<span class="skill-badge" style="--sk-color:${g.color}">${escHtml(s)}</span>`).join('')}
+      </div>
+    </div>`).join('')}`;
+}
+
+function renderProjects(){
+  document.getElementById('projects-container').innerHTML = `
+  <h2 class="sec-title">My <span>Projects</span></h2>
+  <p class="sec-sub">Things I've built & shipped</p>
+  <div class="card-grid">
+  ${D.projects.map(p=>{
+    // Always show emoji, overlay thumbnail on hover via CSS
+    const thumb = `<div class="proj-thumb-ph"><span class="ti">${p.icon}</span></div>${p.thumbnail ? `<img src="${p.thumbnail}" alt="${escHtml(p.title)}">` : ''}`;
+    const tags = p.tags.map(t=>`<span class="tag">${escHtml(t)}</span>`).join('');
+    const demoLink = (p.demoData || p.demoEmbed)
+      ? `<span class="plink" style="cursor:pointer;color:var(--green)" onclick="openDemoModal('${p.id}')">🔗 Live Demo</span>`
+      : `<span class="plink no-demo">Sorry, No Demo Available</span>`;
+    const fc = p.files ? p.files.length : 0;
+    return `<div class="card">
+      <div class="proj-thumb">${thumb}</div>
+      <div class="card-title">${escHtml(p.title)}</div>
+      <div class="card-meta">${escHtml(p.date)}</div>
+      <p class="card-desc">${escHtml(p.desc)}</p>
+      <div style="margin-top:.7rem">${tags}</div>
+      <div class="proj-links">
+        ${p.github?`<a href="${escHtml(p.github)}" target="_blank" class="plink">📂 GitHub</a>`:''}
+        ${demoLink}
+        ${fc>0?`<span class="btn-files" onclick="openModal('${p.id}')">📁 Files (${fc})</span>`:`<span class="btn-files" onclick="openModal('${p.id}')">📁 Details</span>`}
+      </div>
+    </div>`;
+  }).join('')}
+  </div>`;
+}
+
+function renderCerts(){
+  const colors = {green:'rgba(0,229,160,.09)',blue:'rgba(77,150,255,.09)',cyan:'rgba(0,201,224,.09)',purple:'rgba(124,92,252,.09)'};
+  const tc = {green:'var(--green)',blue:'var(--blue)',cyan:'var(--cyan)',purple:'var(--purple)'};
+  const icons = {green:'🎯',blue:'⭐',cyan:'🏆',purple:'🔷'};
+  document.getElementById('certs-container').innerHTML = `
+  <h2 class="sec-title">My <span>Certifications</span></h2>
+  <p class="sec-sub">Courses & credentials I've earned</p>
+  <div class="card-grid">
+  ${D.certs.map(c=>`
+    <div class="card"><div class="cert-row">
+      <div class="cert-icon" style="background:${colors[c.color]||colors.green};color:${tc[c.color]||tc.green}">${icons[c.color]||'🎯'}</div>
+      <div class="cert-body">
+        <div class="cert-title-t">${escHtml(c.title)}</div>
+        <div class="cert-iss">${escHtml(c.issuer)} · ${escHtml(c.date)}</div>
+        ${c.link&&c.link!='#'?`<a href="${escHtml(c.link)}" target="_blank" class="cert-link">View Certificate →</a>`:''}
+      </div>
+    </div></div>`).join('')}
+  </div>`;
+}
+
+function renderMarks(){
+  document.getElementById('marks-container').innerHTML = `
+  <h2 class="sec-title">My <span>Marksheets</span></h2>
+  <p class="sec-sub">Academic records & transcripts</p>
+  ${D.marksheets.map(m=>{
+    const dlHref = m.fileData ? m.fileData : (m.externalLink || '#');
+    const dlAttr = m.fileData ? `download="${escHtml(m.fileName||m.name)}"` : 'target="_blank"';
+    const hasFile = m.fileData || m.externalLink;
+    return `<div class="card marks-card">
+      <div class="marks-hdr">
+        <div class="marks-title-t">${escHtml(m.name)}</div>
+        <span class="mbadge ${m.badgeType==='gold'?'mb-gold':'mb-blue'}">CGPA: ${escHtml(m.cgpa)}</span>
+      </div>
+      <div class="marks-body">
+        <span class="marks-note">${hasFile?'Official marksheet available for download':'No marksheet uploaded yet'}</span>
+        ${hasFile?`<a class="btn-dl" href="${dlHref}" ${dlAttr}>⬇ Download Marksheet</a>`:''}
+      </div>
+    </div>`;
+  }).join('')}`;
+}
+
+function renderExp(){
+  document.getElementById('exp-container').innerHTML = `
+  <h2 class="sec-title">My <span>Experience</span></h2>
+  <p class="sec-sub">Places I've worked & contributed</p>
+  <div class="timeline">
+  ${D.experience.map(e=>{
+    if(e.type==='parallel'){
+      return `<div class="tpar">
+        <div class="par-date">${escHtml(e.startDate)} — ${escHtml(e.endDate)}</div>
+        <div class="par-scroll">
+          <div class="par-row">
+            ${(e.jobs||[]).map(j=>`<div class="par-card">
+              <div class="trole">${escHtml(j.role)}</div>
+              <div class="tplace">${escHtml(j.company)} · ${escHtml(j.empType)} · ${escHtml(j.location)}</div>
+              <p class="tdesc">${escHtml(j.desc)}</p>
+            </div>`).join('')}
+          </div>
+        </div>
+      </div>`;
+    }
+    return `<div class="titem">
+      <div class="tdate">${escHtml(e.startDate)} — ${escHtml(e.endDate)}</div>
+      <div class="trole">${escHtml(e.role)}</div>
+      <div class="tplace">${escHtml(e.company)} · ${escHtml(e.empType)} · ${escHtml(e.location)}</div>
+      <p class="tdesc">${escHtml(e.desc)}</p>
+    </div>`;
+  }).join('')}
+  </div>`;
+}
+
+function renderEdu(){
+  document.getElementById('edu-container').innerHTML = `
+  <h2 class="sec-title">My <span>Education</span></h2>
+  <p class="sec-sub">Academic journey</p>
+  <div class="timeline">
+  ${D.education.map(e=>`
+    <div class="titem">
+      <div class="tdate">${e.startYear?escHtml(e.startYear)+' — ':''}${escHtml(e.endYear)}</div>
+      <div class="trole">${escHtml(e.degree)}</div>
+      <div class="tplace">${escHtml(e.institution)}${e.location?' · '+escHtml(e.location):''}</div>
+      <p class="tdesc">${escHtml(e.desc)}</p>
+    </div>`).join('')}
+  </div>`;
+}
+
+/* ════════════════════════════════════════════
+   PROJECT MODAL
+════════════════════════════════════════════ */
+let curProj = null;
+function openModal(id){
+  curProj = D.projects.find(p=>p.id===id); if(!curProj) return;
+  const p = curProj;
+  document.getElementById('m-title').textContent = p.title;
+  document.getElementById('m-meta').textContent  = p.date;
+  document.getElementById('m-desc').textContent  = p.desc;
+  document.getElementById('m-tags').innerHTML    = p.tags.map(t=>`<span class="tag">${escHtml(t)}</span>`).join('');
+  const linksEl = document.getElementById('m-links');
+  linksEl.innerHTML = '';
+  if(p.github) linksEl.innerHTML += `<a href="${p.github}" target="_blank" class="btn-files">📂 GitHub</a>`;
+  if(p.demoData||p.demoEmbed) linksEl.innerHTML += `<span class="btn-files" style="cursor:pointer" onclick="openDemoModal('${p.id}')">🔗 Live Demo</span>`;
+  else linksEl.innerHTML += `<span style="font-size:.78rem;color:var(--muted);font-style:italic">Sorry, No Demo Available</span>`;
+  const fs = document.getElementById('files-sec');
+  if(p.files && p.files.length){
+    fs.style.display='block';
+    document.getElementById('ftabs').innerHTML = p.files.map((f,i)=>
+      `<div class="ftab ${i===0?'on':''}" onclick="selFile(${i})">${fIcon(f.type)} ${escHtml(f.label)}</div>`).join('');
+    document.getElementById('fpreview').innerHTML = '<div class="prev-load">Loading...</div>';
+    renderPrev(p.files[0], document.getElementById('fpreview'));
+  } else { fs.style.display='none'; }
+  document.getElementById('modalBg').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeModal(){ document.getElementById('modalBg').classList.remove('open'); document.body.style.overflow=''; }
+function handleOverlay(e){ if(e.target===document.getElementById('modalBg')) closeModal(); }
+
+/* DEMO MODAL */
+function openDemoModal(id){
+  const p = D.projects.find(x=>x.id===id); if(!p) return;
+  document.getElementById('dm-title').textContent = p.title + ' — Live Demo';
+  const body = document.getElementById('dm-body');
+
+  if(p.demoEmbed){
+    // Power BI or any embed URL — full interactive iframe
+    document.getElementById('dm-sub').textContent = 'Interactive embed';
+    body.innerHTML = `<iframe class="demo-iframe" src="${p.demoEmbed}" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin"></iframe>`;
+  } else if(p.demoData){
+    const t = p.demoType||'';
+    if(t==='video'){
+      document.getElementById('dm-sub').textContent = p.demoFileName||'Video';
+      body.innerHTML = `<video style="width:100%;max-height:clamp(240px,55vw,580px);display:block;background:#000" src="${p.demoData}" controls autoplay muted playsinline></video>`;
+    } else if(t==='image'){
+      document.getElementById('dm-sub').textContent = p.demoFileName||'Image';
+      body.innerHTML = `<img class="demo-img" src="${p.demoData}" alt="Demo">`;
+    } else if(t==='pdf'){
+      document.getElementById('dm-sub').textContent = p.demoFileName||'PDF Document';
+      body.innerHTML = `<iframe class="demo-iframe" src="${p.demoData}"></iframe>`;
+    } else if(t==='excel'){
+      document.getElementById('dm-sub').textContent = p.demoFileName||'Excel File';
+      body.innerHTML = `<div class="demo-msg"><span class="dm-ic">📗</span><div>Loading spreadsheet...</div></div>`;
+      // render excel table
+      try{
+        const b64=p.demoData.split(',')[1];
+        const raw=atob(b64); const bytes=new Uint8Array(raw.length);
+        for(let i=0;i<raw.length;i++) bytes[i]=raw.charCodeAt(i);
+        const wb=XLSX.read(bytes.buffer,{type:'array'});
+        const ws=wb.Sheets[wb.SheetNames[0]];
+        const rows=XLSX.utils.sheet_to_json(ws,{header:1});
+        if(!rows.length){body.innerHTML='<div class="demo-msg"><span class="dm-ic">📗</span>Empty sheet</div>';return;}
+        const [hdr,...data]=rows;
+        body.innerHTML=`<div class="prev-tw" style="padding:.75rem"><table class="prev-table"><thead><tr>${hdr.map(h=>`<th>${h||''}</th>`).join('')}</tr></thead><tbody>${data.map(r=>`<tr>${hdr.map((_,i)=>`<td>${r[i]!==undefined?r[i]:''}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+      }catch(e){ body.innerHTML=`<div class="demo-msg"><span class="dm-ic">📗</span><div>Could not render</div><a href="${p.demoData}" download="${p.demoFileName||'file'}">Download File</a></div>`; }
+    } else if(t==='csv'){
+      document.getElementById('dm-sub').textContent = p.demoFileName||'CSV File';
+      try{
+        const text = atob(p.demoData.split(',')[1]);
+        const rows = text.trim().split('\n').map(r=>r.split(','));
+        const [hdr,...data]=rows;
+        body.innerHTML=`<div class="prev-tw" style="padding:.75rem"><table class="prev-table"><thead><tr>${hdr.map(h=>`<th>${h.trim()}</th>`).join('')}</tr></thead><tbody>${data.map(r=>`<tr>${r.map(c=>`<td>${c.trim()}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+      }catch(e){ body.innerHTML=`<div class="demo-msg"><span class="dm-ic">📊</span><div>Could not render</div><a href="${p.demoData}" download>Download</a></div>`; }
+    } else if(t==='html'){
+      document.getElementById('dm-sub').textContent = p.demoFileName||'HTML Page';
+      body.innerHTML = `<iframe class="demo-iframe" src="${p.demoData}" sandbox="allow-scripts allow-same-origin"></iframe>`;
+    } else {
+      // Generic download
+      document.getElementById('dm-sub').textContent = p.demoFileName||'File';
+      body.innerHTML = `<div class="demo-msg"><span class="dm-ic">📁</span><div>${escHtml(p.demoFileName||'Demo file')}</div><a href="${p.demoData}" download="${p.demoFileName||'demo'}">⬇ Download File</a></div>`;
+    }
+  } else {
+    body.innerHTML = `<div class="demo-msg"><span class="dm-ic">🚫</span><div>No demo available</div></div>`;
+  }
+
+  document.getElementById('demoBg').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeDemoModal(){ document.getElementById('demoBg').classList.remove('open'); document.body.style.overflow=''; document.getElementById('dm-body').innerHTML=''; }
+function handleDemoOverlay(e){ if(e.target===document.getElementById('demoBg')) closeDemoModal(); }
+function selFile(idx){
+  if(!curProj) return;
+  document.querySelectorAll('.ftab').forEach((t,i)=>t.classList.toggle('on',i===idx));
+  const el = document.getElementById('fpreview');
+  el.innerHTML='<div class="prev-load">Loading...</div>';
+  renderPrev(curProj.files[idx], el);
+}
+function fIcon(t){ return{image:'🖼',sql:'🗄',code:'📄',csv:'📊',pdf:'📕',ipynb:'📓',powerbi:'📈',excel:'📗',ppt:'📽',url:'🔗'}[t]||'📄'; }
+async function renderPrev(file, el){
+  try{
+    switch(file.type){
+      case 'image':
+        el.innerHTML=`<img class="prev-img" src="${file.data||file.src}" alt="${escHtml(file.label)}">`;
+        break;
+      case 'sql': case 'code':{
+        let t = file.text || '';
+        if(!t && file.src){ const r=await fetch(file.src); t=await r.text(); }
+        const lang = file.lang||(file.type==='sql'?'sql':'plaintext');
+        const hl = hljs.highlight(t,{language:lang,ignoreIllegals:true}).value;
+        el.innerHTML=`<pre class="prev-code"><code class="hljs">${hl}</code></pre>`;
+        break;
+      }
+      case 'csv':{
+        let t = file.text || '';
+        if(!t && file.src){ const r=await fetch(file.src); t=await r.text(); }
+        const rows = t.trim().split('\n').map(r=>r.split(','));
+        const [hdr,...data] = rows;
+        el.innerHTML=`<div class="prev-tw"><table class="prev-table"><thead><tr>${hdr.map(h=>`<th>${h.trim()}</th>`).join('')}</tr></thead><tbody>${data.map(r=>`<tr>${r.map(c=>`<td>${c.trim()}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+        break;
+      }
+      case 'excel':{
+        let buf;
+        if(file.data){ const b64=file.data.split(',')[1]; const raw=atob(b64); const bytes=new Uint8Array(raw.length); for(let i=0;i<raw.length;i++) bytes[i]=raw.charCodeAt(i); buf=bytes.buffer; }
+        else if(file.src){ const r=await fetch(file.src); buf=await r.arrayBuffer(); }
+        const wb=XLSX.read(buf,{type:'array'});
+        const ws=wb.Sheets[wb.SheetNames[0]];
+        const raw2=XLSX.utils.sheet_to_json(ws,{header:1});
+        if(!raw2.length){el.innerHTML='<div class="prev-msg"><span class="pm-ic">📗</span>Empty sheet</div>';break;}
+        const [hdr,...rows]=raw2;
+        el.innerHTML=`<div class="prev-tw"><table class="prev-table"><thead><tr>${hdr.map(h=>`<th>${h||''}</th>`).join('')}</tr></thead><tbody>${rows.map(r=>`<tr>${hdr.map((_,i)=>`<td>${r[i]!==undefined?r[i]:''}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+        break;
+      }
+      case 'pdf':
+        el.innerHTML=`<iframe class="prev-iframe" src="${file.data||file.src}"></iframe>`;
+        break;
+      case 'powerbi':
+        el.innerHTML=`<iframe class="prev-iframe" src="${file.embed}" allowFullScreen></iframe>`;
+        break;
+      case 'ipynb':
+        el.innerHTML=`<div class="prev-msg"><span class="pm-ic">📓</span><div>Jupyter Notebook</div><a href="${file.url}" target="_blank">Open in nbviewer →</a></div>`;
+        break;
+      case 'ppt':
+        if(file.gslides) el.innerHTML=`<iframe class="prev-iframe" src="${file.gslides}" allowFullScreen></iframe>`;
+        else el.innerHTML=`<div class="prev-msg"><span class="pm-ic">📽</span><div>${escHtml(file.label)}</div><a href="${file.data||file.src||'#'}" download>Download →</a></div>`;
+        break;
+      case 'url':
+        el.innerHTML=`<div class="prev-msg"><span class="pm-ic">🔗</span><div>${escHtml(file.label)}</div><a href="${file.url}" target="_blank">Open Link →</a></div>`;
+        break;
+      default:
+        el.innerHTML=`<div class="prev-msg"><span class="pm-ic">📄</span><div>${escHtml(file.label)}</div></div>`;
+    }
+  }catch(err){
+    el.innerHTML=`<div class="prev-msg"><span class="pm-ic">⚠️</span><div style="color:#ff6b6b">Could not load file</div></div>`;
+  }
+}
+
+/* ════════════════════════════════════════════
+   ADMIN - AUTH
+════════════════════════════════════════════ */
+function openAdminLogin(){ document.getElementById('aLoginBg').classList.add('open'); }
+function closeAdminLogin(){ document.getElementById('aLoginBg').classList.remove('open'); }
+function doLogin(){
+  const u=document.getElementById('aUser').value.trim();
+  const p=document.getElementById('aPass').value;
+  if(u==='Serial'&&p==='Coder'){
+    closeAdminLogin();
+    document.getElementById('aPanel').classList.add('open');
+    document.body.style.overflow='hidden';
+    aPage('home');
+  } else {
+    document.getElementById('loginErr').textContent='Incorrect username or password.';
+  }
+}
+function adminLogout(){
+  document.getElementById('aPanel').classList.remove('open');
+  document.body.style.overflow='';
+  document.getElementById('aUser').value='';
+  document.getElementById('aPass').value='';
+}
+
+/* ════════════════════════════════════════════
+   ADMIN - NAVIGATION
+════════════════════════════════════════════ */
+function aPage(sec){
+  document.querySelectorAll('.a-nav a').forEach(a=>a.classList.remove('on'));
+  const el=document.getElementById('an-'+sec); if(el) el.classList.add('on');
+  const fns={home:aHome,skills:aSkills,projects:aProjects,certs:aCerts,marks:aMarks,exp:aExp,edu:aEdu};
+  if(fns[sec]) fns[sec]();
+}
+
+/* ════════════════════════════════════════════
+   ADMIN - HOME
+════════════════════════════════════════════ */
+function aHome(){
+  const h=D.home;
+  document.getElementById('aContent').innerHTML=`
+  <h3>🏠 Home Page <span>Edit your profile & intro</span></h3>
+  <div class="a-form">
+    <div class="a-form-title">Profile</div>
+    <div class="a-form-grid">
+      <div class="aform-row"><label>Your Name</label><input id="hName" value="${escAttr(h.name)}"></div>
+      <div class="aform-row"><label>Status Tag (e.g. "Open to opportunities")</label><input id="hGreet" value="${escAttr(h.greeting)}"></div>
+      <div class="aform-row full"><label>Bio</label><textarea id="hBio" rows="3">${escHtml(h.bio)}</textarea></div>
+      <div class="aform-row"><label>Email</label><input id="hEmail" value="${escAttr(h.email)}"></div>
+      <div class="aform-row"><label>GitHub URL</label><input id="hGh" value="${escAttr(h.github)}"></div>
+      <div class="aform-row"><label>LinkedIn URL</label><input id="hLi" value="${escAttr(h.linkedin)}"></div>
+      <div class="aform-row"><label>Years Experience (e.g. 3+)</label><input id="hYrs" value="${escAttr(h.yearsExp)}"></div>
+      <div class="aform-row"><label>Experience Badge Label</label><input id="hBadge" value="${escAttr(h.expBadge)}"></div>
+    </div>
+    <div class="aform-row" style="margin-top:1rem"><label>Profile Photo</label>
+      <div class="upload-zone" onclick="document.getElementById('hPhotoIn').click()">
+        <input type="file" id="hPhotoIn" accept="image/*" style="display:none" onchange="previewHomePhoto(this)">
+        ${h.photo?`<img src="${h.photo}" class="preview-thumb" id="hPhotoPreview">`:`<div class="upload-zone-text" id="hPhotoPreview">Click to upload photo <em>(JPG, PNG, WebP)</em></div>`}
+      </div>
+      ${h.photo?`<button onclick="removeHomePhoto()" style="margin-top:.4rem;background:none;border:none;color:#ff6b6b;font-size:.76rem;cursor:pointer">Remove photo</button>`:''}
+    </div>
+    <div class="a-form-btns">
+      <button class="a-save" onclick="saveHome()">Save Changes</button>
+    </div>
+  </div>`;
+}
+function compressImage(file, maxW, maxH, quality, cb){
+  const img = new Image();
+  const url = URL.createObjectURL(file);
+  img.onload = ()=>{
+    let w = img.width, h = img.height;
+    if(w > maxW){ h = Math.round(h * maxW / w); w = maxW; }
+    if(h > maxH){ w = Math.round(w * maxH / h); h = maxH; }
+    const canvas = document.createElement('canvas');
+    canvas.width = w; canvas.height = h;
+    canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+    URL.revokeObjectURL(url);
+    cb(canvas.toDataURL('image/jpeg', quality));
+  };
+  img.src = url;
+}
+
+function previewHomePhoto(inp){
+  if(!inp.files[0]) return;
+  // Compress to max 600x750px at 80% quality — keeps file small for localStorage
+  compressImage(inp.files[0], 600, 750, 0.80, b64=>{
+    D.home.photo = b64;
+    saveData();
+    renderHome();
+    const prev = document.getElementById('hPhotoPreview');
+    if(prev) prev.outerHTML = `<img src="${b64}" class="preview-thumb" id="hPhotoPreview">`;
+    showToast('Photo saved!');
+  });
+}
+function removeHomePhoto(){ D.home.photo=null; saveData(); renderHome(); aHome(); }
+function saveHome(){
+  D.home.name     = document.getElementById('hName').value.trim();
+  D.home.greeting = document.getElementById('hGreet').value.trim();
+  D.home.bio      = document.getElementById('hBio').value.trim();
+  D.home.email    = document.getElementById('hEmail').value.trim();
+  D.home.github   = document.getElementById('hGh').value.trim();
+  D.home.linkedin = document.getElementById('hLi').value.trim();
+  D.home.yearsExp = document.getElementById('hYrs').value.trim();
+  D.home.expBadge = document.getElementById('hBadge').value.trim();
+  saveData(); renderHome(); showToast('Home saved!');
+}
+
+/* ════════════════════════════════════════════
+   ADMIN - SKILLS
+════════════════════════════════════════════ */
+function aSkills(){
+  document.getElementById('aContent').innerHTML=`
+  <h3>⚡ Skills <span>Manage skill categories & badges</span></h3>
+  <div id="skList"></div>
+  <button class="a-add-btn" onclick="addSkillCat()">+ Add Category</button>
+  <button class="a-save" onclick="saveSkills()">Save All Skills</button>`;
+  renderSkillAdmin();
+}
+function renderSkillAdmin(){
+  document.getElementById('skList').innerHTML=D.skills.map((g,gi)=>`
+  <div class="sk-cat" id="sg-${gi}">
+    <div class="sk-cat-hdr">
+      <input class="cat-name" value="${escAttr(g.cat)}" oninput="D.skills[${gi}].cat=this.value">
+      <div style="display:flex;align-items:center;gap:.5rem">
+        <label style="font-size:.72rem;color:var(--muted)">Border color:</label>
+        <input type="color" value="${g.color||'#00e5a0'}" onchange="D.skills[${gi}].color=this.value;renderSkillAdmin()" style="width:32px;height:28px;border:none;background:transparent;cursor:pointer">
+      </div>
+      <button onclick="delSkillCat(${gi})" style="background:none;border:none;color:#ff6b6b;cursor:pointer;font-size:.85rem">✕ Delete</button>
+    </div>
+    <div class="sk-list">${g.items.map((s,si)=>`
+      <span class="sk-chip" style="border-color:${g.color||'#00e5a0'}22">
+        ${escHtml(s)}
+        <button onclick="delSkill(${gi},${si})">×</button>
+      </span>`).join('')}
+    </div>
+    <div class="sk-add-row">
+      <input id="sk-inp-${gi}" placeholder="Add skill..." onkeydown="if(event.key==='Enter')addSkill(${gi})">
+      <button onclick="addSkill(${gi})">Add</button>
+    </div>
+  </div>`).join('');
+}
+function addSkill(gi){
+  const inp=document.getElementById('sk-inp-'+gi);
+  const v=inp.value.trim(); if(!v) return;
+  D.skills[gi].items.push(v); inp.value=''; renderSkillAdmin();
+}
+function delSkill(gi,si){ D.skills[gi].items.splice(si,1); renderSkillAdmin(); }
+function addSkillCat(){ D.skills.push({id:uid(),cat:'New Category',color:'#00e5a0',items:[]}); renderSkillAdmin(); }
+function delSkillCat(gi){ if(!confirm('Delete this category?')) return; D.skills.splice(gi,1); renderSkillAdmin(); }
+function saveSkills(){ saveData(); renderSkills(); showToast('Skills saved!'); }
+
+/* ════════════════════════════════════════════
+   ADMIN - PROJECTS
+════════════════════════════════════════════ */
+function aProjects(editId){
+  if(editId){ return aProjectForm(editId); }
+  document.getElementById('aContent').innerHTML=`
+  <h3>🚀 Projects <span>Manage your projects</span></h3>
+  <button class="a-add-btn" onclick="aProjectForm(null)">+ Add Project</button>
+  <div id="proj-list"></div>`;
+  document.getElementById('proj-list').innerHTML=D.projects.map((p,i)=>`
+  <div class="a-item">
+    <div class="a-item-body">
+      <div class="a-item-title">${p.icon} ${escHtml(p.title)}</div>
+      <div class="a-item-sub">${escHtml(p.date)} · ${p.tags.join(', ')} · ${p.files.length} file(s)</div>
+    </div>
+    <div class="a-item-btns">
+      <button class="a-edit" style="padding:.32rem .5rem;background:rgba(0,229,160,.07);border:1px solid rgba(0,229,160,.2);color:var(--green);border-radius:7px;font-size:.82rem;cursor:pointer;" onclick="moveProject(${i},-1)" ${i===0?'disabled style="opacity:.3;cursor:default;padding:.32rem .5rem;border-radius:7px;font-size:.82rem;"':''}>↑</button>
+      <button class="a-edit" style="padding:.32rem .5rem;background:rgba(0,229,160,.07);border:1px solid rgba(0,229,160,.2);color:var(--green);border-radius:7px;font-size:.82rem;cursor:pointer;" onclick="moveProject(${i},1)" ${i===D.projects.length-1?'disabled style="opacity:.3;cursor:default;padding:.32rem .5rem;border-radius:7px;font-size:.82rem;"':''}>↓</button>
+      <button class="a-edit" onclick="aProjectForm('${p.id}')">Edit</button>
+      <button class="a-del" onclick="delProject('${p.id}')">Delete</button>
+    </div>
+  </div>`).join('');
+}
+function aProjectForm(editId){
+  const p = editId ? D.projects.find(x=>x.id===editId) : {id:uid(),title:'',icon:'🚀',date:'',desc:'',tags:[],thumbnail:null,github:'',demo:'',demoData:null,demoType:'',demoFileName:'',demoEmbed:'',files:[]};
+  const isNew = !editId;
+  document.getElementById('aContent').innerHTML=`
+  <h3>${isNew?'➕ New':'✏️ Edit'} Project</h3>
+  <div class="a-form">
+    <div class="a-form-grid">
+      <div class="aform-row"><label>Project Title</label><input id="pTitle" value="${escAttr(p.title)}"></div>
+      <div class="aform-row"><label>Icon Emoji</label><input id="pIcon" value="${escAttr(p.icon)}" style="width:80px"></div>
+      <div class="aform-row"><label>Date Range (e.g. Jan 2024 — Mar 2024)</label><input id="pDate" value="${escAttr(p.date)}"></div>
+      <div class="aform-row"><label>Tags (comma separated)</label><input id="pTags" value="${escAttr(p.tags.join(', '))}"></div>
+      <div class="aform-row full"><label>Description</label><textarea id="pDesc" rows="3">${escHtml(p.desc)}</textarea></div>
+      <div class="aform-row"><label>GitHub URL</label><input id="pGh" value="${escAttr(p.github||'')}"></div>
+    </div>
+    <div class="a-form" style="margin-top:.75rem">
+      <div class="a-form-title">Live Demo Setup</div>
+      <div style="font-size:.78rem;color:var(--muted);margin-bottom:1rem">Do options hain — jo chahiye wo use karo:</div>
+      <div class="aform-row"><label>Option 1 — Upload Demo File (PDF, Image, Video MP4, Excel, CSV — max 100MB)</label>
+        <div class="upload-zone" onclick="document.getElementById('pDemoIn').click()">
+          <input type="file" id="pDemoIn" style="display:none" accept="image/*,.pdf,.mp4,.webm,.xlsx,.xls,.csv" onchange="handleDemoUpload(this)">
+          <div class="upload-zone-text" id="pDemoPreview">${p.demoData?`File uploaded: <em>${escHtml(p.demoFileName||'')}</em>`:'Click to upload <em>(PDF, Image, Video, Excel, CSV)</em>'}</div>
+        </div>
+        ${p.demoData?`<button onclick="removeDemoFile()" style="background:none;border:none;color:#ff6b6b;font-size:.72rem;cursor:pointer;margin-top:.3rem">Remove file</button>`:''}
+      </div>
+      <div class="aform-row" style="margin-top:.75rem"><label>Option 2 — Embed URL (Power BI / YouTube Embed / any iframe link)</label>
+        <input id="pDemoEmbed" value="${escAttr(p.demoEmbed||'')}" placeholder="https://www.youtube.com/embed/... or Power BI embed URL">
+        <div style="font-size:.68rem;color:var(--muted);margin-top:.35rem">
+          YouTube: youtube.com/watch?v=<b>ABC123</b> → paste as youtube.com/embed/<b>ABC123</b><br>
+          Power BI: File → Publish to web → copy embed URL
+        </div>
+      </div>
+    </div>
+    <div class="aform-row" style="margin-top:.75rem"><label>Thumbnail Image</label>
+      <div class="upload-zone" onclick="document.getElementById('pThumbIn').click()">
+        <input type="file" id="pThumbIn" accept="image/*" style="display:none" onchange="handleThumbUpload(this)">
+        ${p.thumbnail?`<img src="${p.thumbnail}" class="preview-thumb" id="pThumbPrev">`:`<div class="upload-zone-text" id="pThumbPrev">Click to upload thumbnail</div>`}
+      </div>
+      ${p.thumbnail?`<button onclick="document.getElementById('pThumbPrev').outerHTML='<div class=\\'upload-zone-text\\' id=\\'pThumbPrev\\'>Click to upload thumbnail</div>';curEditP.thumbnail=null;" style="background:none;border:none;color:#ff6b6b;font-size:.72rem;cursor:pointer;margin-top:.3rem">Remove</button>`:''}
+    </div>
+  </div>
+
+  <div class="a-form">
+    <div class="a-form-title" style="display:flex;justify-content:space-between;align-items:center">
+      Project Files
+      <button class="a-add-btn" style="margin:0;font-size:.75rem;padding:.35rem .85rem" onclick="addFileToProject()">+ Add File</button>
+    </div>
+    <div id="pFilesList"></div>
+    <div id="pFileForm" style="display:none;margin-top:.85rem;padding-top:.85rem;border-top:1px solid var(--border)"></div>
+  </div>
+
+  <div class="a-form-btns">
+    <button class="a-save" onclick="saveProject('${p.id}',${isNew})">Save Project</button>
+    <button class="a-cancel" onclick="aProjects()">Cancel</button>
+  </div>`;
+
+  window.curEditP = JSON.parse(JSON.stringify(p));
+  // preserve existing demo file data
+  if(editId && p.demoData) window.curEditP.demoData = p.demoData;
+  renderProjectFiles();
+}
+function handleThumbUpload(inp){
+  if(!inp.files[0]) return;
+  compressImage(inp.files[0], 800, 500, 0.80, b64=>{
+    window.curEditP.thumbnail = b64;
+    const prev = document.getElementById('pThumbPrev');
+    if(prev) prev.outerHTML = `<img src="${b64}" class="preview-thumb" id="pThumbPrev">`;
+  });
+}
+function handleDemoUpload(inp){
+  if(!inp.files[0]) return;
+  const file=inp.files[0];
+  if(file.size>100*1024*1024){ showToast('File too large (>100MB). Compress or use YouTube embed URL.',true); return; }
+  const ext=file.name.split('.').pop().toLowerCase();
+  const typeMap={pdf:'pdf',jpg:'image',jpeg:'image',png:'image',gif:'image',webp:'image',xlsx:'excel',xls:'excel',csv:'csv',html:'html',htm:'html',mp4:'video',webm:'video',mov:'video'};
+  const demoType=typeMap[ext]||'file';
+  fileToBase64(file, b64=>{
+    window.curEditP.demoData=b64;
+    window.curEditP.demoType=demoType;
+    window.curEditP.demoFileName=file.name;
+    document.getElementById('pDemoPreview').innerHTML=`File ready: <em>${escHtml(file.name)}</em> (${demoType})`;
+  });
+}
+function removeDemoFile(){
+  window.curEditP.demoData=null; window.curEditP.demoType=''; window.curEditP.demoFileName='';
+  document.getElementById('pDemoPreview').innerHTML='Click to upload demo file';
+}
+function renderProjectFiles(){
+  const fc=document.getElementById('pFilesList');
+  if(!window.curEditP.files.length){ fc.innerHTML=`<div style="font-size:.78rem;color:var(--muted);padding:.5rem 0">No files added yet.</div>`; return; }
+  fc.innerHTML=window.curEditP.files.map((f,i)=>`
+  <div class="file-item">
+    <div style="font-size:1.1rem">${fIcon(f.type)}</div>
+    <div class="file-item-info">${escHtml(f.label)}<em>${f.type}${f.lang?' · '+f.lang:''}</em></div>
+    <button class="file-item-del" onclick="removePFile(${i})">×</button>
+  </div>`).join('');
+}
+function removePFile(i){ window.curEditP.files.splice(i,1); renderProjectFiles(); }
+function addFileToProject(){
+  document.getElementById('pFileForm').style.display='block';
+  document.getElementById('pFileForm').innerHTML=`
+  <div style="font-size:.8rem;font-weight:600;margin-bottom:.75rem;color:var(--text)">Add File</div>
+  <div class="a-form-grid">
+    <div class="aform-row"><label>File Label (shown in tab)</label><input id="fLabel" placeholder="e.g. schema.sql"></div>
+    <div class="aform-row"><label>File Type</label>
+      <select id="fType" onchange="renderFileTypeFields()">
+        <option value="image">Image (upload)</option>
+        <option value="pdf">PDF (upload)</option>
+        <option value="code">Code/Text (upload)</option>
+        <option value="csv">CSV (upload)</option>
+        <option value="excel">Excel (upload)</option>
+        <option value="ppt">PowerPoint (upload or Google Slides)</option>
+        <option value="ipynb">Jupyter Notebook (URL)</option>
+        <option value="powerbi">Power BI (Embed URL)</option>
+        <option value="url">External Link</option>
+      </select>
+    </div>
+    <div class="full" id="fTypeFields"></div>
+  </div>
+  <div style="display:flex;gap:.65rem;margin-top:.75rem">
+    <button class="a-save" onclick="confirmAddFile()">Add File</button>
+    <button class="a-cancel" onclick="document.getElementById('pFileForm').style.display='none'">Cancel</button>
+  </div>`;
+  renderFileTypeFields();
+}
+function renderFileTypeFields(){
+  const t=document.getElementById('fType').value;
+  const el=document.getElementById('fTypeFields');
+  if(t==='image'||t==='pdf'||t==='csv'||t==='excel'||t==='ppt'){
+    el.innerHTML=`<div class="aform-row"><label>Upload File</label>
+      <div class="upload-zone" onclick="document.getElementById('fFileIn').click()">
+        <input type="file" id="fFileIn" style="display:none" accept="${t==='image'?'image/*':t==='pdf'?'.pdf':t==='csv'?'.csv':t==='excel'?'.xlsx,.xls':'.pptx'}">
+        <div class="upload-zone-text">Click to upload <em>${t} file</em></div>
+      </div></div>
+      ${t==='code'?`<div class="aform-row"><label>Language (e.g. python, sql, javascript)</label><input id="fLang" placeholder="python"></div>`:''}
+      ${t==='ppt'?`<div class="aform-row"><label>OR Google Slides Embed URL (optional)</label><input id="fGSlides" placeholder="https://docs.google.com/presentation/d/..."></div>`:''}`;
+  }else if(t==='code'){
+    el.innerHTML=`<div class="aform-row"><label>Upload Code File</label>
+      <div class="upload-zone" onclick="document.getElementById('fFileIn').click()">
+        <input type="file" id="fFileIn" style="display:none">
+        <div class="upload-zone-text">Click to upload <em>code file</em></div>
+      </div></div>
+      <div class="aform-row"><label>Language (for syntax highlighting)</label><input id="fLang" placeholder="python"></div>`;
+  }else if(t==='ipynb'){
+    el.innerHTML=`<div class="aform-row full"><label>nbviewer URL (upload notebook to GitHub then use nbviewer.org)</label><input id="fUrl" placeholder="https://nbviewer.org/github/..."></div>`;
+  }else if(t==='powerbi'){
+    el.innerHTML=`<div class="aform-row full"><label>Power BI Embed URL (File > Publish to web in Power BI)</label><input id="fEmbed" placeholder="https://app.powerbi.com/reportEmbed?..."></div>`;
+  }else if(t==='url'){
+    el.innerHTML=`<div class="aform-row full"><label>URL</label><input id="fUrl" placeholder="https://..."></div>`;
+  }
+}
+function confirmAddFile(){
+  const label=document.getElementById('fLabel').value.trim();
+  const type=document.getElementById('fType').value;
+  if(!label){ showToast('Add a label!',true); return; }
+  const fObj={type,label};
+  if(type==='ipynb'||type==='url'){ fObj.url=document.getElementById('fUrl').value.trim(); window.curEditP.files.push(fObj); renderProjectFiles(); document.getElementById('pFileForm').style.display='none'; return; }
+  if(type==='powerbi'){ fObj.embed=document.getElementById('fEmbed').value.trim(); window.curEditP.files.push(fObj); renderProjectFiles(); document.getElementById('pFileForm').style.display='none'; return; }
+  if(type==='code'||type==='ppt'){
+    const gsl=document.getElementById('fGSlides');
+    if(gsl&&gsl.value.trim()){ fObj.gslides=gsl.value.trim(); window.curEditP.files.push(fObj); renderProjectFiles(); document.getElementById('pFileForm').style.display='none'; return; }
+    const lang=document.getElementById('fLang');
+    if(lang) fObj.lang=lang.value.trim();
+  }
+  const inp=document.getElementById('fFileIn');
+  if(!inp||!inp.files[0]){ showToast('Select a file!',true); return; }
+  const file=inp.files[0];
+  if(file.size>3*1024*1024){ showToast('File too large (>3MB). Use external link instead.',true); return; }
+  if(type==='code'||type==='csv'){
+    const reader=new FileReader();
+    reader.onload=e=>{ fObj.text=e.target.result; window.curEditP.files.push(fObj); renderProjectFiles(); document.getElementById('pFileForm').style.display='none'; };
+    reader.readAsText(file);
+  } else {
+    fileToBase64(file, b64=>{ fObj.data=b64; window.curEditP.files.push(fObj); renderProjectFiles(); document.getElementById('pFileForm').style.display='none'; });
+  }
+}
+function saveProject(id, isNew){
+  const p=window.curEditP;
+  p.title   = document.getElementById('pTitle').value.trim();
+  p.icon    = document.getElementById('pIcon').value.trim()||'🚀';
+  p.date    = document.getElementById('pDate').value.trim();
+  p.desc    = document.getElementById('pDesc').value.trim();
+  p.tags    = document.getElementById('pTags').value.split(',').map(t=>t.trim()).filter(Boolean);
+  p.github  = document.getElementById('pGh').value.trim();
+  p.demo    = null;
+  p.demoEmbed = document.getElementById('pDemoEmbed').value.trim()||null;
+  // demoData/demoType/demoFileName already stored in curEditP by handleDemoUpload
+  if(!p.title){ showToast('Title is required!',true); return; }
+  if(isNew){ D.projects.push(p); }
+  else { const idx=D.projects.findIndex(x=>x.id===id); if(idx>-1) D.projects[idx]=p; }
+  saveData(); renderProjects(); showToast(isNew?'Project added!':'Project updated!'); aProjects();
+}
+function delProject(id){ if(!confirm('Delete this project?')) return; D.projects=D.projects.filter(p=>p.id!==id); saveData(); renderProjects(); aProjects(); showToast('Project deleted!'); }
+function moveProject(idx, dir){
+  const newIdx = idx + dir;
+  if(newIdx < 0 || newIdx >= D.projects.length) return;
+  const tmp = D.projects[idx];
+  D.projects[idx] = D.projects[newIdx];
+  D.projects[newIdx] = tmp;
+  saveData(); renderProjects(); aProjects();
+}
+
+/* ════════════════════════════════════════════
+   ADMIN - CERTIFICATIONS
+════════════════════════════════════════════ */
+function aCerts(editId){
+  if(editId!==undefined) return aCertForm(editId==='new'?null:editId);
+  document.getElementById('aContent').innerHTML=`
+  <h3>🏅 Certifications</h3>
+  <button class="a-add-btn" onclick="aCertForm(null)">+ Add Certification</button>
+  <div id="cert-list">
+  ${D.certs.map(c=>`<div class="a-item">
+    <div class="a-item-body"><div class="a-item-title">${escHtml(c.title)}</div><div class="a-item-sub">${escHtml(c.issuer)} · ${escHtml(c.date)}</div></div>
+    <div class="a-item-btns">
+      <button class="a-edit" onclick="aCertForm('${c.id}')">Edit</button>
+      <button class="a-del" onclick="delCert('${c.id}')">Delete</button>
+    </div>
+  </div>`).join('')}
+  </div>`;
+}
+function aCertForm(editId){
+  const c=editId?D.certs.find(x=>x.id===editId):{id:uid(),title:'',issuer:'',date:'',link:'',color:'green'};
+  const isNew=!editId;
+  document.getElementById('aContent').innerHTML=`
+  <h3>${isNew?'➕ Add':'✏️ Edit'} Certification</h3>
+  <div class="a-form">
+    <div class="a-form-grid">
+      <div class="aform-row"><label>Certificate Title</label><input id="cTitle" value="${escAttr(c.title)}"></div>
+      <div class="aform-row"><label>Issuer / Platform</label><input id="cIss" value="${escAttr(c.issuer)}"></div>
+      <div class="aform-row"><label>Date (e.g. Jan 2024)</label><input id="cDate" value="${escAttr(c.date)}"></div>
+      <div class="aform-row"><label>Certificate Link (URL)</label><input id="cLink" value="${escAttr(c.link||'')}"></div>
+      <div class="aform-row"><label>Color Theme</label>
+        <select id="cColor"><option value="green" ${c.color==='green'?'selected':''}>Green</option><option value="blue" ${c.color==='blue'?'selected':''}>Blue</option><option value="cyan" ${c.color==='cyan'?'selected':''}>Cyan</option><option value="purple" ${c.color==='purple'?'selected':''}>Purple</option></select>
+      </div>
+    </div>
+    <div class="a-form-btns">
+      <button class="a-save" onclick="saveCert('${c.id}',${isNew})">Save</button>
+      <button class="a-cancel" onclick="aCerts()">Cancel</button>
+    </div>
+  </div>`;
+}
+function saveCert(id,isNew){
+  const obj={id,title:document.getElementById('cTitle').value.trim(),issuer:document.getElementById('cIss').value.trim(),date:document.getElementById('cDate').value.trim(),link:document.getElementById('cLink').value.trim(),color:document.getElementById('cColor').value};
+  if(!obj.title){showToast('Title required!',true);return;}
+  if(isNew) D.certs.push(obj); else { const i=D.certs.findIndex(x=>x.id===id); if(i>-1) D.certs[i]=obj; }
+  saveData(); renderCerts(); showToast(isNew?'Certification added!':'Updated!'); aCerts();
+}
+function delCert(id){ if(!confirm('Delete?')) return; D.certs=D.certs.filter(c=>c.id!==id); saveData(); renderCerts(); aCerts(); showToast('Deleted!'); }
+
+/* ════════════════════════════════════════════
+   ADMIN - MARKSHEETS
+════════════════════════════════════════════ */
+function aMarks(editId){
+  if(editId!==undefined) return aMarkForm(editId==='new'?null:editId);
+  document.getElementById('aContent').innerHTML=`
+  <h3>📊 Marksheets</h3>
+  <button class="a-add-btn" onclick="aMarkForm(null)">+ Add Marksheet</button>
+  <div id="mark-list">
+  ${D.marksheets.map(m=>`<div class="a-item">
+    <div class="a-item-body"><div class="a-item-title">${escHtml(m.name)}</div><div class="a-item-sub">CGPA: ${escHtml(m.cgpa)} · ${m.fileData?'File uploaded':m.externalLink?'External link':'No file yet'}</div></div>
+    <div class="a-item-btns">
+      <button class="a-edit" onclick="aMarkForm('${m.id}')">Edit</button>
+      <button class="a-del" onclick="delMark('${m.id}')">Delete</button>
+    </div>
+  </div>`).join('')}
+  </div>`;
+}
+function aMarkForm(editId){
+  const m=editId?D.marksheets.find(x=>x.id===editId):{id:uid(),name:'',cgpa:'',badgeType:'gold',fileData:null,fileName:'',externalLink:''};
+  const isNew=!editId;
+  document.getElementById('aContent').innerHTML=`
+  <h3>${isNew?'➕ Add':'✏️ Edit'} Marksheet</h3>
+  <div class="a-form">
+    <div class="a-form-grid">
+      <div class="aform-row"><label>Semester / Year Name</label><input id="mName" value="${escAttr(m.name)}" placeholder="e.g. Semester 1"></div>
+      <div class="aform-row"><label>CGPA / Percentage</label><input id="mCgpa" value="${escAttr(m.cgpa)}" placeholder="e.g. 9.2"></div>
+      <div class="aform-row"><label>Badge Color</label>
+        <select id="mBadge"><option value="gold" ${m.badgeType==='gold'?'selected':''}>Gold (green)</option><option value="blue" ${m.badgeType==='blue'?'selected':''}>Blue</option></select>
+      </div>
+    </div>
+    <div class="aform-row" style="margin-top:.75rem"><label>Upload Marksheet (Image or PDF)</label>
+      <div class="upload-zone" onclick="document.getElementById('mFileIn').click()">
+        <input type="file" id="mFileIn" accept="image/*,.pdf" style="display:none" onchange="handleMarkUpload(this)">
+        <div class="upload-zone-text" id="mFilePrev">${m.fileData?`File uploaded: <em>${escHtml(m.fileName)}</em>`:'Click to upload marksheet <em>(Image or PDF)</em>'}</div>
+      </div>
+    </div>
+    <div class="aform-row"><label>OR Paste External Link (Google Drive, etc.)</label>
+      <input id="mExtLink" value="${escAttr(m.externalLink||'')}" placeholder="https://drive.google.com/...">
+    </div>
+    ${m.fileData?`<button onclick="removeMarkFile()" style="background:none;border:none;color:#ff6b6b;font-size:.72rem;cursor:pointer;margin-top:.3rem">Remove uploaded file</button>`:''}
+    <div class="a-form-btns">
+      <button class="a-save" onclick="saveMark('${m.id}',${isNew})">Save</button>
+      <button class="a-cancel" onclick="aMarks()">Cancel</button>
+    </div>
+  </div>`;
+  window.curMarkFileData=m.fileData||null;
+  window.curMarkFileName=m.fileName||'';
+}
+function handleMarkUpload(inp){
+  if(!inp.files[0]) return;
+  if(inp.files[0].size>5*1024*1024){ showToast('File too large (>5MB). Use external link.',true); return; }
+  fileToBase64(inp.files[0], b64=>{
+    window.curMarkFileData=b64;
+    window.curMarkFileName=inp.files[0].name;
+    document.getElementById('mFilePrev').innerHTML=`File ready: <em>${escHtml(inp.files[0].name)}</em>`;
+  });
+}
+function removeMarkFile(){ window.curMarkFileData=null; window.curMarkFileName=''; document.getElementById('mFilePrev').innerHTML='Click to upload marksheet'; }
+function saveMark(id,isNew){
+  const obj={id,name:document.getElementById('mName').value.trim(),cgpa:document.getElementById('mCgpa').value.trim(),badgeType:document.getElementById('mBadge').value,fileData:window.curMarkFileData||null,fileName:window.curMarkFileName||'',externalLink:document.getElementById('mExtLink').value.trim()};
+  if(!obj.name){showToast('Name required!',true);return;}
+  if(isNew) D.marksheets.push(obj); else { const i=D.marksheets.findIndex(x=>x.id===id); if(i>-1) D.marksheets[i]=obj; }
+  saveData(); renderMarks(); showToast(isNew?'Marksheet added!':'Updated!'); aMarks();
+}
+function delMark(id){ if(!confirm('Delete?')) return; D.marksheets=D.marksheets.filter(m=>m.id!==id); saveData(); renderMarks(); aMarks(); showToast('Deleted!'); }
+
+/* ════════════════════════════════════════════
+   ADMIN - EXPERIENCE
+════════════════════════════════════════════ */
+function aExp(editId){
+  if(editId!==undefined) return aExpForm(editId==='new'?null:editId);
+  document.getElementById('aContent').innerHTML=`
+  <h3>💼 Experience</h3>
+  <button class="a-add-btn" onclick="aExpForm(null)">+ Add Experience</button>
+  <div id="exp-list">
+  ${D.experience.map((e,i)=>`<div class="a-item">
+    <div class="a-item-body">
+      <div class="a-item-title">${e.type==='parallel'?'Parallel: '+(e.jobs||[]).map(j=>j.role).join(' & '):escHtml(e.role+' @ '+e.company)}</div>
+      <div class="a-item-sub">${escHtml(e.startDate)} — ${escHtml(e.endDate)} · ${e.type}</div>
+    </div>
+    <div class="a-item-btns">
+      <button style="padding:.32rem .5rem;background:rgba(0,229,160,.07);border:1px solid rgba(0,229,160,.2);color:var(--green);border-radius:7px;font-size:.82rem;cursor:pointer;${i===0?'opacity:.3;pointer-events:none':''}" onclick="moveExp(${i},-1)">↑</button>
+      <button style="padding:.32rem .5rem;background:rgba(0,229,160,.07);border:1px solid rgba(0,229,160,.2);color:var(--green);border-radius:7px;font-size:.82rem;cursor:pointer;${i===D.experience.length-1?'opacity:.3;pointer-events:none':''}" onclick="moveExp(${i},1)">↓</button>
+      <button class="a-edit" onclick="aExpForm('${e.id}')">Edit</button>
+      <button class="a-del" onclick="delExp('${e.id}')">Delete</button>
+    </div>
+  </div>`).join('')}
+  </div>`;
+}
+function aExpForm(editId){
+  const e=editId?D.experience.find(x=>x.id===editId):{id:uid(),type:'single',startDate:'',endDate:'',role:'',company:'',empType:'',location:'',desc:'',jobs:[{role:'',company:'',empType:'',location:'',desc:''},{role:'',company:'',empType:'',location:'',desc:''}]};
+  const isNew=!editId;
+  const isSingle=e.type!=='parallel';
+  document.getElementById('aContent').innerHTML=`
+  <h3>${isNew?'➕ Add':'✏️ Edit'} Experience</h3>
+  <div class="a-form">
+    <div class="a-form-grid">
+      <div class="aform-row"><label>Type</label>
+        <select id="eType" onchange="toggleExpType()">
+          <option value="single" ${isSingle?'selected':''}>Single Job</option>
+          <option value="parallel" ${!isSingle?'selected':''}>Two Jobs Simultaneously</option>
+        </select>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;" class="full">
+        <div class="aform-row"><label>Start Date (e.g. Jan 2024)</label><input id="eStart" value="${escAttr(e.startDate)}"></div>
+        <div class="aform-row"><label>End Date (e.g. Present)</label><input id="eEnd" value="${escAttr(e.endDate)}"></div>
+      </div>
+    </div>
+    <div id="eSingleFields" style="${!isSingle?'display:none':''}">
+      <div class="a-form-grid">
+        <div class="aform-row"><label>Job Title / Role</label><input id="eRole" value="${escAttr(e.role||'')}"></div>
+        <div class="aform-row"><label>Company / Organization</label><input id="eComp" value="${escAttr(e.company||'')}"></div>
+        <div class="aform-row"><label>Employment Type</label><input id="eEmpType" value="${escAttr(e.empType||'')}" placeholder="Full-time / Internship / Freelance"></div>
+        <div class="aform-row"><label>Location</label><input id="eLoc" value="${escAttr(e.location||'')}"></div>
+        <div class="aform-row full"><label>Description</label><textarea id="eDesc" rows="3">${escHtml(e.desc||'')}</textarea></div>
+      </div>
+    </div>
+    <div id="eParFields" style="${isSingle?'display:none':''}">
+      <div style="font-size:.8rem;color:var(--muted);margin-bottom:.75rem">Job 1 (Left side)</div>
+      <div class="a-form-grid">
+        <div class="aform-row"><label>Role</label><input id="eJ1Role" value="${escAttr((e.jobs&&e.jobs[0]&&e.jobs[0].role)||'')}"></div>
+        <div class="aform-row"><label>Company</label><input id="eJ1Comp" value="${escAttr((e.jobs&&e.jobs[0]&&e.jobs[0].company)||'')}"></div>
+        <div class="aform-row"><label>Type</label><input id="eJ1Emp" value="${escAttr((e.jobs&&e.jobs[0]&&e.jobs[0].empType)||'')}"></div>
+        <div class="aform-row"><label>Location</label><input id="eJ1Loc" value="${escAttr((e.jobs&&e.jobs[0]&&e.jobs[0].location)||'')}"></div>
+        <div class="aform-row full"><label>Description</label><textarea id="eJ1Desc" rows="2">${escHtml((e.jobs&&e.jobs[0]&&e.jobs[0].desc)||'')}</textarea></div>
+      </div>
+      <div style="font-size:.8rem;color:var(--muted);margin:.75rem 0">Job 2 (Right side)</div>
+      <div class="a-form-grid">
+        <div class="aform-row"><label>Role</label><input id="eJ2Role" value="${escAttr((e.jobs&&e.jobs[1]&&e.jobs[1].role)||'')}"></div>
+        <div class="aform-row"><label>Company</label><input id="eJ2Comp" value="${escAttr((e.jobs&&e.jobs[1]&&e.jobs[1].company)||'')}"></div>
+        <div class="aform-row"><label>Type</label><input id="eJ2Emp" value="${escAttr((e.jobs&&e.jobs[1]&&e.jobs[1].empType)||'')}"></div>
+        <div class="aform-row"><label>Location</label><input id="eJ2Loc" value="${escAttr((e.jobs&&e.jobs[1]&&e.jobs[1].location)||'')}"></div>
+        <div class="aform-row full"><label>Description</label><textarea id="eJ2Desc" rows="2">${escHtml((e.jobs&&e.jobs[1]&&e.jobs[1].desc)||'')}</textarea></div>
+      </div>
+    </div>
+    <div class="a-form-btns">
+      <button class="a-save" onclick="saveExp('${e.id}',${isNew})">Save</button>
+      <button class="a-cancel" onclick="aExp()">Cancel</button>
+    </div>
+  </div>`;
+}
+function toggleExpType(){
+  const t=document.getElementById('eType').value;
+  document.getElementById('eSingleFields').style.display=t==='single'?'':'none';
+  document.getElementById('eParFields').style.display=t==='parallel'?'':'none';
+}
+function saveExp(id,isNew){
+  const t=document.getElementById('eType').value;
+  let obj={id,type:t,startDate:document.getElementById('eStart').value.trim(),endDate:document.getElementById('eEnd').value.trim()};
+  if(t==='single'){
+    obj.role=document.getElementById('eRole').value.trim();
+    obj.company=document.getElementById('eComp').value.trim();
+    obj.empType=document.getElementById('eEmpType').value.trim();
+    obj.location=document.getElementById('eLoc').value.trim();
+    obj.desc=document.getElementById('eDesc').value.trim();
+  } else {
+    obj.jobs=[
+      {role:document.getElementById('eJ1Role').value.trim(),company:document.getElementById('eJ1Comp').value.trim(),empType:document.getElementById('eJ1Emp').value.trim(),location:document.getElementById('eJ1Loc').value.trim(),desc:document.getElementById('eJ1Desc').value.trim()},
+      {role:document.getElementById('eJ2Role').value.trim(),company:document.getElementById('eJ2Comp').value.trim(),empType:document.getElementById('eJ2Emp').value.trim(),location:document.getElementById('eJ2Loc').value.trim(),desc:document.getElementById('eJ2Desc').value.trim()}
+    ];
+  }
+  if(isNew) D.experience.push(obj); else { const i=D.experience.findIndex(x=>x.id===id); if(i>-1) D.experience[i]=obj; }
+  saveData(); renderExp(); showToast(isNew?'Experience added!':'Updated!'); aExp();
+}
+function delExp(id){ if(!confirm('Delete?')) return; D.experience=D.experience.filter(e=>e.id!==id); saveData(); renderExp(); aExp(); showToast('Deleted!'); }
+function moveExp(idx,dir){
+  const n=idx+dir;
+  if(n<0||n>=D.experience.length) return;
+  const tmp=D.experience[idx]; D.experience[idx]=D.experience[n]; D.experience[n]=tmp;
+  saveData(); renderExp(); aExp();
+}
+
+/* ════════════════════════════════════════════
+   ADMIN - EDUCATION
+════════════════════════════════════════════ */
+function aEdu(editId){
+  if(editId!==undefined) return aEduForm(editId==='new'?null:editId);
+  document.getElementById('aContent').innerHTML=`
+  <h3>🎓 Education</h3>
+  <button class="a-add-btn" onclick="aEduForm(null)">+ Add Education</button>
+  <div id="edu-list">
+  ${D.education.map(e=>`<div class="a-item">
+    <div class="a-item-body"><div class="a-item-title">${escHtml(e.degree)}</div><div class="a-item-sub">${escHtml(e.institution)} · ${e.startYear?escHtml(e.startYear)+' — ':''}${escHtml(e.endYear)}</div></div>
+    <div class="a-item-btns">
+      <button class="a-edit" onclick="aEduForm('${e.id}')">Edit</button>
+      <button class="a-del" onclick="delEdu('${e.id}')">Delete</button>
+    </div>
+  </div>`).join('')}
+  </div>`;
+}
+function aEduForm(editId){
+  const e=editId?D.education.find(x=>x.id===editId):{id:uid(),startYear:'',endYear:'',degree:'',institution:'',location:'',desc:''};
+  const isNew=!editId;
+  document.getElementById('aContent').innerHTML=`
+  <h3>${isNew?'➕ Add':'✏️ Edit'} Education</h3>
+  <div class="a-form">
+    <div class="a-form-grid">
+      <div class="aform-row"><label>Start Year (blank if N/A)</label><input id="edStart" value="${escAttr(e.startYear)}"></div>
+      <div class="aform-row"><label>End Year</label><input id="edEnd" value="${escAttr(e.endYear)}"></div>
+      <div class="aform-row"><label>Degree / Class</label><input id="edDeg" value="${escAttr(e.degree)}" placeholder="B.Tech / Class 12th"></div>
+      <div class="aform-row"><label>Institution</label><input id="edInst" value="${escAttr(e.institution)}"></div>
+      <div class="aform-row"><label>Location (optional)</label><input id="edLoc" value="${escAttr(e.location)}"></div>
+      <div class="aform-row full"><label>Description (CGPA, branch, achievements)</label><textarea id="edDesc" rows="3">${escHtml(e.desc)}</textarea></div>
+    </div>
+    <div class="a-form-btns">
+      <button class="a-save" onclick="saveEdu('${e.id}',${isNew})">Save</button>
+      <button class="a-cancel" onclick="aEdu()">Cancel</button>
+    </div>
+  </div>`;
+}
+function saveEdu(id,isNew){
+  const obj={id,startYear:document.getElementById('edStart').value.trim(),endYear:document.getElementById('edEnd').value.trim(),degree:document.getElementById('edDeg').value.trim(),institution:document.getElementById('edInst').value.trim(),location:document.getElementById('edLoc').value.trim(),desc:document.getElementById('edDesc').value.trim()};
+  if(!obj.degree){showToast('Degree required!',true);return;}
+  if(isNew) D.education.push(obj); else { const i=D.education.findIndex(x=>x.id===id); if(i>-1) D.education[i]=obj; }
+  saveData(); renderEdu(); showToast(isNew?'Education added!':'Updated!'); aEdu();
+}
+function delEdu(id){ if(!confirm('Delete?')) return; D.education=D.education.filter(e=>e.id!==id); saveData(); renderEdu(); aEdu(); showToast('Deleted!'); }
+
+/* ════════════════════════════════════════════
+   UTILS
+════════════════════════════════════════════ */
+function fileToBase64(file, cb){
+  const r=new FileReader();
+  r.onload=e=>cb(e.target.result);
+  r.readAsDataURL(file);
+}
+function escHtml(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function escAttr(s){ return String(s||'').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
+
+let toastTimer;
+function showToast(msg, isErr){
+  const old=document.querySelector('.toast'); if(old) old.remove();
+  const t=document.createElement('div');
+  t.className='toast'+(isErr?' err':'');
+  t.textContent=isErr?'⚠ '+msg:'✓ '+msg;
+  document.body.appendChild(t);
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>t.remove(), 2800);
+}
+
+function exportHTML(){
+  // Step 1: Reset DOM to clean state before capturing
+  document.getElementById('aPanel').classList.remove('open');
+  document.body.style.overflow = '';
+
+  // Step 2: Show home page, hide all others
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-home').classList.add('active');
+  document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+  const navHome = document.getElementById('nav-home');
+  if(navHome) navHome.classList.add('active');
+
+  // Step 3: Capture clean HTML
+  const dataJson = JSON.stringify(D);
+  let exported = document.documentElement.outerHTML;
+
+  // Step 4: Embed data
+  exported = exported.replace(/const OVERRIDE = .*?\/\*PORTFOLIO_DATA_END\*\//s,
+    `const OVERRIDE = ${dataJson}; /*PORTFOLIO_DATA_END*/`);
+
+  // Step 5: Restore current state
+  document.getElementById('aPanel').classList.add('open');
+
+  // Step 6: Download
+  const blob = new Blob([exported], {type:'text/html'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'index.html'; a.click();
+  URL.revokeObjectURL(url);
+  showToast('Exported as index.html — ready to upload to GitHub!');
+}
+
+/* Portfolio navigation */
+function showPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-links a').forEach(a=>a.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  const n=document.getElementById('nav-'+id); if(n) n.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function toggleMenu(){ document.getElementById('mobMenu').classList.toggle('open'); }
+function closeMenu(){ document.getElementById('mobMenu').classList.remove('open'); }
+document.addEventListener('keydown', e=>{ if(e.key==='Escape'){ closeModal(); closeDemoModal(); } });
+
+/* SVG Icons */
+const svgEmail=`<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>`;
+const svgGh=`<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844a9.59 9.59 0 0 1 2.504.337c1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.02 10.02 0 0 0 22 12.017C22 6.484 17.522 2 12 2z"/></svg>`;
+const svgLi=`<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg>`;
+const svgUser=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`;
+
+/* INIT */
+document.addEventListener('DOMContentLoaded', ()=>{
+  loadData(); renderAll();
+  document.getElementById('nav-home').classList.add('active');
+  document.getElementById('aPanel').classList.remove('open');
+  document.body.style.overflow = '';
+});
+</script>
+</body>
+</html>
